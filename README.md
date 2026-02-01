@@ -29,8 +29,102 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Here is the tentative prisma database schema:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+model User {
+  id        String   @id
+  name      String
+  email     String   @unique
+  role      String   // "driver" | "sponsorUser" | "admin"
+  sponsorId String?  // only for driver or sponsorUser
+  points    Int      @default(0) // only for drivers
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+  sessions Session[]
+  accounts Account[]
+}
+
+model Sponsor {
+  id        String   @id
+  name      String
+  pointValue Float   @default(0.01)
+  users     User[]
+  products  Product[]
+}
+
+model Product {
+  id           String @id
+  sponsorId    String
+  sponsor      Sponsor @relation(fields: [sponsorId], references: [id])
+  name         String
+  description  String
+  priceInPoints Int
+  externalId   String?
+  available    Boolean @default(true)
+  imageUrls    String?  // JSON string array maybe
+}
+
+model Purchase {
+  id         String @id
+  driverId   String
+  driver     User @relation(fields: [driverId], references: [id])
+  productId  String
+  product    Product @relation(fields: [productId], references: [id])
+  quantity   Int
+  totalPoints Int
+  status     String // "pending", "completed", "cancelled"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model PointHistory {
+  id         String @id
+  driverId   String
+  sponsorId  String
+  driver     User @relation(fields: [driverId], references: [id])
+  sponsor    Sponsor @relation(fields: [sponsorId], references: [id])
+  change     Int
+  reason     String
+  createdAt  DateTime @default(now())
+}
+
+model DriverApplication {
+  id        String @id
+  driverId  String
+  sponsorId String
+  status    String // "pending", "accepted", "rejected"
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id           String @id
+  actorUserId  String
+  targetUserId String?
+  actionType   String
+  details      String
+  createdAt    DateTime @default(now())
+}
+
+model DriverProfile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  sponsorId         String?
+  sponsor           Sponsor? @relation(fields: [sponsorId], references: [id])
+
+  pointsBalance     Int      @default(0)
+  status            String   @default("pending")
+  // pending | active | dropped
+
+  joinedAt          DateTime?
+  droppedAt         DateTime?
+
+  alertsPoints      Boolean  @default(true)
+  alertsOrders      Boolean  @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
