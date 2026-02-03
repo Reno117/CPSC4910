@@ -24,7 +24,7 @@ export default async function SponsorDashboard() {
   return (
     <div>
       <DriverHeader />
-      <div className="pt-16"> {/* Add padding to account for fixed header */}
+      <div> {/* Add padding to account for fixed header */}
         {/* Driver-specific content */}
         <div>
           <div className="w-full h-130 overflow-hidden">
@@ -51,7 +51,7 @@ export default async function SponsorDashboard() {
           backgroundColor: '#f5f5f5',
           borderRadius: '8px',
           padding: '20px',
-          marginTop: '100px',
+          //marginTop: '100px',
           justifyContent: 'center'
         }} >
           {/*Drivers */}
