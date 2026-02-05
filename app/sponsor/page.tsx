@@ -26,6 +26,11 @@ export default function SponsorDashboard() {
     router.push('/sponsor/driverApplications');
     router.refresh;
     };
+  
+  const toMakeDriver = async () => {
+    router.push('/sponsor/create-driver');
+    router.refresh;
+  }
 
   return (
     <div>
@@ -138,6 +143,24 @@ export default function SponsorDashboard() {
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
           > Audits
+          </button>
+          {/*Make Driver button */}
+          <button onClick = {toMakeDriver}
+            style={{
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              width: '100px',
+              height: '60px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '500',
+              marginLeft: '250px'
+            }}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
+          > Make Driver
           </button>
         </div>
       </div>
