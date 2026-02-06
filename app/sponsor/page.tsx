@@ -1,15 +1,10 @@
-
 import DriverHeader from "../components/SponsorHeader";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { authClient } from "@/lib/auth-client";
 import { requireSponsorUser } from "@/lib/auth-helpers";
 import  SponsorToApps from "../components/Sponsor-toapps-button"
-// Define the Driver type
-interface Driver {
-  id: number;
-  name: string;
-}
+
 
 export default async function SponsorDashboard() {
 
@@ -62,7 +57,15 @@ export default async function SponsorDashboard() {
         }} >
           {/*Drivers */}
           <h2 style={{ marginTop: 0, color: '#333', textAlign: 'center' }}>Registered Drivers</h2>
-
+          {drivers.length === 0 ? (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '20px', 
+            color: '#666' 
+          }}>
+            No registered drivers
+          </div>
+          ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {drivers.map((driver) => (
               <div
@@ -77,6 +80,7 @@ export default async function SponsorDashboard() {
 
               >
                 <span style={{ fontSize: '16px', fontWeight: '500', color: '#000000' }}>
+                {driver.user.name}
                 </span>
                 <button
                   style={{
@@ -97,6 +101,7 @@ export default async function SponsorDashboard() {
               </div>
             ))}
           </div>
+          )}
           {/* Application and Audits buttons */}
         </div>
         <div style={{
