@@ -1,36 +1,32 @@
 
-"use client";
-import React, { useState } from 'react';
 import DriverHeader from "../components/SponsorHeader";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { requireSponsorUser } from "@/lib/auth-helpers";
+import  SponsorToApps from "../components/Sponsor-toapps-button"
 // Define the Driver type
 interface Driver {
   id: number;
   name: string;
 }
 
-export default function SponsorDashboard() {
-  // Sample driver data
-  const drivers: Driver[] = [
-    { id: 1, name: 'Driver1' },
-    { id: 2, name: 'Driver2' },
-    { id: 3, name: 'Driver3' },
-    { id: 4, name: 'Driver4' },
-  ];
+export default async function SponsorDashboard() {
 
-  const router = useRouter();
-  const toApplications = async () => {
-    router.push('/sponsor/driverApplications');
-    router.refresh;
-    };
-  
-  const toMakeDriver = async () => {
-    router.push('/sponsor/create-driver');
-    router.refresh;
-  }
+  const sponsorUser = await requireSponsorUser();
+  const sponsorId = sponsorUser.sponsorUser!.sponsorId;
+  const drivers = await prisma.driverProfile.findMany({
+    where: {
+      sponsorId: sponsorId,
+      status: "active"
+    },
+    include: {
+        user: true
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  })
 
   return (
     <div>
@@ -81,7 +77,6 @@ export default function SponsorDashboard() {
 
               >
                 <span style={{ fontSize: '16px', fontWeight: '500', color: '#000000' }}>
-                  {driver.name}
                 </span>
                 <button
                   style={{
@@ -95,8 +90,8 @@ export default function SponsorDashboard() {
                     alignItems: 'right',
                     marginLeft: '550px'
                   }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
+                //onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+                //onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
                 > Modify Points
                 </button>
               </div>
@@ -111,7 +106,7 @@ export default function SponsorDashboard() {
           justifyContent: 'center',
           marginTop: '70px'
         }}>
-          <button onClick={toApplications}
+          <button
             style={{
               backgroundColor: '#007bff',
               color: 'white',
@@ -121,12 +116,15 @@ export default function SponsorDashboard() {
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '14px',
-              fontWeight: '500'
+              fontWeight: '500',
+              marginRight: '250px'
             }}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
-          > Applications
+          //onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+          //onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
+          > Audits
           </button>
+          <SponsorToApps />
+          {/*Make Driver button */}
           <button
             style={{
               backgroundColor: '#007bff',
@@ -140,26 +138,8 @@ export default function SponsorDashboard() {
               fontWeight: '500',
               marginLeft: '250px'
             }}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
-          > Audits
-          </button>
-          {/*Make Driver button */}
-          <button onClick = {toMakeDriver}
-            style={{
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              width: '100px',
-              height: '60px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
-              marginLeft: '250px'
-            }}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
+          //onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+          //onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
           > Make Driver
           </button>
         </div>
