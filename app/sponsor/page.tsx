@@ -75,11 +75,13 @@ export default async function SponsorDashboard() {
                   padding: '15px',
                   borderRadius: '6px',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  textAlign: 'center'
+                  display: 'flex',
+                  textAlign: 'center',
+                  justifyContent: 'space-between'
                 }}
 
               >
-                <span style={{ fontSize: '16px', fontWeight: '500', color: '#000000' }}>
+                <span style={{ fontSize: '16px', fontWeight: '500', color: '#000000', marginLeft: '20px' }}>
                 {driver.user.name}
                 </span>
                 <button
@@ -91,8 +93,7 @@ export default async function SponsorDashboard() {
                     borderRadius: '4px',
                     cursor: 'pointer',
                     fontSize: '14px',
-                    alignItems: 'right',
-                    marginLeft: '550px'
+                    alignItems: 'right'
                   }}
                 //onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
                 //onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
