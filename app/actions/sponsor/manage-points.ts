@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireSponsorUser } from "@/lib/auth-helpers";
+import { requireSponsorOrAdmin } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
 export async function addPoints(
@@ -9,21 +9,31 @@ export async function addPoints(
   amount: number,
   reason: string
 ) {
-  const sponsorUser = await requireSponsorUser();
-  const sponsorId = sponsorUser.sponsorUser!.sponsorId;
+  const { user, isAdmin, sponsorId } = await requireSponsorOrAdmin();
 
-  // Verify driver belongs to this sponsor
+  // Verify driver belongs to this sponsor (unless admin)
   const driverProfile = await prisma.driverProfile.findUnique({
     where: { id: driverProfileId },
   });
 
-  if (!driverProfile || driverProfile.sponsorId !== sponsorId) {
-    throw new Error("Driver not found or unauthorized");
+  if (!driverProfile) {
+    throw new Error("Driver not found");
+  }
+
+  // Sponsors can only manage their own drivers, admins can manage any
+  if (!isAdmin && driverProfile.sponsorId !== sponsorId) {
+    throw new Error("Unauthorized: Driver not in your organization");
+  }
+
+  // Use the driver's actual sponsorId for the point change record
+  const actualSponsorId = driverProfile.sponsorId;
+  
+  if (!actualSponsorId) {
+    throw new Error("Driver is not associated with a sponsor");
   }
 
   // Update points in transaction
   await prisma.$transaction([
-    // Update driver balance
     prisma.driverProfile.update({
       where: { id: driverProfileId },
       data: {
@@ -33,19 +43,18 @@ export async function addPoints(
       },
     }),
     
-    // Create audit record
     prisma.pointChange.create({
       data: {
         driverProfileId: driverProfileId,
-        sponsorId: sponsorId,
+        sponsorId: actualSponsorId,
         amount: amount,
         reason: reason,
-        changedBy: sponsorUser.id,
+        changedBy: user.id,
       },
     }),
   ]);
 
-  revalidatePath(`/sponsor/drivers/${driverProfileId}`);
+  revalidatePath(`/sponsor/drivers`);
   
   return { success: true };
 }

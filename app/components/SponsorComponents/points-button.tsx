@@ -6,9 +6,14 @@ import { addPoints } from "@/app/actions/sponsor/manage-points";
 interface PointsButtonProps {
   driverProfileId: string;
   driverName: string;
+  sponsorId: string; // Add this line
 }
 
-export default function PointsButton({ driverProfileId, driverName }: PointsButtonProps) {
+export default function PointsButton({
+  driverProfileId,
+  driverName,
+  sponsorId,
+}: PointsButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [reason, setReason] = useState("");
@@ -56,7 +61,9 @@ export default function PointsButton({ driverProfileId, driverName }: PointsButt
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Manage Points for {driverName}</h2>
+            <h2 className="text-2xl font-bold mb-4">
+              Manage Points for {driverName}
+            </h2>
 
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -80,7 +87,9 @@ export default function PointsButton({ driverProfileId, driverName }: PointsButt
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Reason (required)</label>
+                <label className="block text-sm font-medium mb-2">
+                  Reason (required)
+                </label>
                 <textarea
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
@@ -99,7 +108,7 @@ export default function PointsButton({ driverProfileId, driverName }: PointsButt
                 >
                   {loading ? "Processing..." : "Submit"}
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={() => {

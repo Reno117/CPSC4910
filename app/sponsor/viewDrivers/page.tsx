@@ -1,19 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import { requireSponsorUser } from "@/lib/auth-helpers";
+import { requireSponsorOrAdmin } from "@/lib/auth-helpers";
 import Link from "next/link";
 import PointsButton from "@/app/components/SponsorComponents/points-button";
 
 export default async function DriversPage() {
-  const sponsorUser = await requireSponsorUser();
-  const sponsorId = sponsorUser.sponsorUser!.sponsorId;
+  const { isAdmin, sponsorId } = await requireSponsorOrAdmin();
 
+  // If admin, show ALL drivers from ALL sponsors
+  // If sponsor, show only their drivers
   const drivers = await prisma.driverProfile.findMany({
-    where: {
-      sponsorId: sponsorId,
-      status: "active",
-    },
+    where: isAdmin
+      ? { status: "active" } // Admin sees all drivers
+      : { sponsorId: sponsorId!, status: "active" }, // Sponsor sees only their drivers
     include: {
       user: true,
+      sponsor: true, // Include sponsor info for admin view
     },
     orderBy: {
       createdAt: "desc",
@@ -45,6 +47,7 @@ export default async function DriversPage() {
                 <PointsButton
                   driverProfileId={driver.id}
                   driverName={driver.user.name}
+                  sponsorId={driver.sponsorId!}
                 />
               </div>
             </div>
