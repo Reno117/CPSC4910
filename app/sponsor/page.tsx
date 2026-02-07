@@ -5,7 +5,7 @@ import { authClient } from "@/lib/auth-client";
 import { requireSponsorUser } from "@/lib/auth-helpers";
 import  SponsorToApps from "../components/SponsorComponents/Sponsor-toapps-button"
 import ToMakeDrivers from "../components/SponsorComponents/Sponsor-tomakedriver"
-
+import ManagePointsButton from "../components/SponsorComponents/ModifyPoints-Button";
 
 export default async function SponsorDashboard() {
 
@@ -85,21 +85,7 @@ export default async function SponsorDashboard() {
                 <span style={{ fontSize: '16px', fontWeight: '500', color: '#000000', marginLeft: '20px' }}>
                 {driver.user.name}
                 </span>
-                <button
-                  style={{
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    alignItems: 'right'
-                  }}
-                //onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-                //onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
-                > Modify Points
-                </button>
+               <ManagePointsButton driver = {driver} />
               </div>
             ))}
           </div>
