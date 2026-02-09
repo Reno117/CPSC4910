@@ -24,18 +24,13 @@ export default async function DriverLayout({
         where: { userId: session.user.id },
       });
 
-      // If pending, redirect to apply page
-      if (driverProfile?.status === "pending") {
-        redirect("/driver/apply");
-      }
-
-      // If active, allow access
-      if (driverProfile?.status === "active") {
+      // Allow active drivers; pending drivers are handled per-page
+      if (driverProfile?.status === "active" || driverProfile?.status === "pending") {
         return <>{children}</>;
       }
 
-      // For any other status, redirect to apply page
-      redirect("/driver/apply");
+      // For any other status, redirect to unauthorized
+      redirect("/unauthorized");
     }
 
     // No access

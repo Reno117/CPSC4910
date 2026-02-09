@@ -16,6 +16,19 @@ export default async function DriverDashboard() {
       const driverProfile = await prisma.driverProfile.findUnique({
         where: { userId: session.user.id },
       });
+
+      if (driverProfile?.status === "pending") {
+        return (
+          <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4">
+            <h1 className="text-3xl font-bold">Unauthorized</h1>
+            <p className="text-gray-600 text-center max-w-xl">
+              Your driver application is still pending. You cannot access the
+              driver dashboard until it is approved.
+            </p>
+          </div>
+        );
+      }
+
       pointsBalance = driverProfile?.pointsBalance || 0;
 
       // Get point transaction history

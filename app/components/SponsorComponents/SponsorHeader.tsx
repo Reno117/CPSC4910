@@ -38,7 +38,12 @@ export default function SponsorHeader() {
                 >
                     ☰
                 </button>
-                <div className="text-xl font-bold">Sponsor Dashboard</div>
+                <Link
+                    href="/sponsor"
+                    className="text-xl font-bold hover:text-blue-100"
+                >
+                    Sponsor Dashboard
+                </Link>
                 <div className="flex items-center space-x-2">
                     <button
                         onClick={() => {/* Handle shopping cart click */}}

@@ -38,7 +38,12 @@ export default function DriverHeader() {
                 >
                     ☰
                 </button>
-                <div className="text-xl font-bold">Driver Dashboard</div>
+                <Link
+                    href="/driver"
+                    className="text-xl font-bold hover:text-blue-100"
+                >
+                    Driver Dashboard
+                </Link>
                 <div className="flex items-center space-x-2">
                     <button
                         onClick={() => {/* Handle shopping cart click */}}

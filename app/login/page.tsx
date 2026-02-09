@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import LogoutButton from "../components/logout-button";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,31 @@ export default function Login() {
 
   const session = authClient.useSession();
   const isLoggedIn = session.data?.user != null;
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    let cancelled = false;
+
+    const redirectIfNeeded = async () => {
+      const driverRedirect = await handleDriverSignIn();
+      if (!cancelled && driverRedirect) {
+        router.push(driverRedirect);
+        return;
+      }
+
+      const sponsorRedirect = await handleSponsorSignIn();
+      if (!cancelled && sponsorRedirect) {
+        router.push(sponsorRedirect);
+      }
+    };
+
+    redirectIfNeeded();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn, router]);
 
   const onSignIn = async () => {
     setError(""); // Clear previous errors

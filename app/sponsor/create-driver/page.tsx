@@ -15,20 +15,10 @@ export default async function CreateDriverPage() {
       })
     : undefined;
 
-  const user = await getCurrentUser();
-
-  const dashboardUrl = user.role === 'admin' 
-  ? '/admin'
-  : user.role === 'sponsor'
-  ? '/sponsor'
-  : '/driver';
-
   return (
     <div>
       <SponsorHeader />
-    <div className="p-8">
-    <ToDashBoard href={dashboardUrl} />
-    <div className="p-8 max-w-2xl mx-auto">
+      <div className="p-8 max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Create New Driver</h1>
         <CreateDriverForm 
           isAdmin={isAdmin} 
@@ -36,7 +26,6 @@ export default async function CreateDriverPage() {
           sponsors={sponsors}
         />
       </div>
-    </div>
     </div>
   );
 }
