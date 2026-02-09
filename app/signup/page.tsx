@@ -3,6 +3,7 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import LogoutButton from "../components/logout-button";
+import Link from "next/link";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -34,66 +35,124 @@ export default function Signup() {
     setName("");
     setRole("");
     router.refresh();
+
+    if (role === "sponsor") {
+    router.push("/sponsor/create-sponsor-user");
+    } else if (role === "driver") {
+      router.push("/driver"); // or whatever your driver landing page is
+    }
   };
 
   const r = authClient.useSession();
   const isLoggedIn = r.data?.user != null;
-  if (!isLoggedIn) {
+  if (isLoggedIn) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen gap-4">
-        <h1 className="text-3xl font-bold">Sign Up</h1>
-
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border px-3 py-2 rounded w-64"
-        />
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border px-3 py-2 rounded w-64"
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border px-3 py-2 rounded w-64"
-        />
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
-          <option>Select role</option>
-          <option>sponsor</option>
-          <option>driver</option>
-          {/* KEEP THE SPONSOR AND DRIVER LOWERCASE IT WILL BREAK EVERYTHING IF NOT   */}
-        </select>
-
-        <button
-          onClick={onSignup}
-          className="text-xl font-semibold px-6 py-2 border rounded hover:bg-blue-500 hover:text-white"
-        >
-          Sign Up
-        </button>
-      </div>
-    );
-  } else {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen gap-4">
-        <h1 className="text-3xl font-bold">
-          You are logged in as {r.data?.user?.name}
-        </h1>
-        <div>
-          <LogoutButton />
+      <div className="min-h-screen grid place-items-center bg-slate-50 px-4">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm text-center">
+          <h1 className="text-2xl font-semibold text-slate-900">
+            You’re logged in!
+          </h1>
+          <p className="mt-2 text-sm text-slate-600">
+            Logged in as{" "}
+            <span className="font-medium text-slate-900">
+              {r.data?.user?.name}
+            </span>
+          </p>
+          <div className="mt-6 flex justify-center">
+            <LogoutButton />
+          </div>
         </div>
       </div>
     );
   }
+
+  return (
+    <div className="min-h-screen bg-slate-50 px-4">
+      <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center">
+        {/* Heading */}
+        <h1 className="text-3xl font-semibold text-slate-900">
+          Create your account
+        </h1>
+
+        {/* Card */}
+        <div className="mt-6 w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          {error && (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                Name
+              </label>
+              <input
+                type="text"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="you@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                Role
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              >
+                <option value="">Select role</option>
+                <option>sponsor</option>
+                <option>driver</option>
+                {/* KEEP THE SPONSOR AND DRIVER LOWERCASE IT WILL BREAK EVERYTHING IF NOT */}
+              </select>
+            </div>
+
+            <button
+              onClick={onSignup}
+              className="w-full rounded-md bg-[#003862] py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#002a4a]"
+            >
+              Create account
+            </button>
+
+            <div className="pt-1 text-xs text-slate-600">
+              Already have an account?{" "}
+              <Link href="/login" className="text-sky-600 hover:underline">
+                Sign in
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
