@@ -49,6 +49,8 @@ model DriverProfile {
   // Relations
   applications  DriverApplication[]
   pointChanges  PointChange[]
+  cart          Cart?     // NEW - one cart per driver
+  orders        Order[]   // NEW
 
   @@map("driver_profile")
 }
@@ -65,6 +67,8 @@ model Sponsor {
   sponsorUsers    SponsorUser[]
   applications    DriverApplication[]
   pointChanges    PointChange[]
+  catalogProducts CatalogProduct[]  // NEW
+  orders          Order[]           // NEW
 
   @@map("sponsor")
 }
@@ -169,4 +173,93 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@map("verification")
+}
+
+model CatalogProduct {
+  id          String   @id @default(cuid())
+  sponsorId   String
+  sponsor     Sponsor  @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
+  
+  ebayItemId  String   // eBay's unique item ID (from their API)
+  title       String   @db.Text
+  imageUrl    String?  @db.Text
+  
+  isActive    Boolean  @default(true) // Sponsor can hide without deleting
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([sponsorId, ebayItemId]) // Prevent duplicate items in same sponsor's catalog
+  @@index([sponsorId])
+  @@map("catalog_product")
+}
+
+model Cart {
+  id              String   @id @default(cuid())
+  driverProfileId String   @unique
+  driverProfile   DriverProfile @relation(fields: [driverProfileId], references: [id], onDelete: Cascade)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  items           CartItem[]
+  
+  @@map("cart")
+}
+
+model CartItem {
+  id              String   @id @default(cuid())
+  cartId          String
+  cart            Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  
+  ebayItemId      String
+  title           String   @db.Text
+  imageUrl        String?  @db.Text
+  pointPrice      Int      // Points at time of adding to cart (snapshot)
+  quantity        Int      @default(1)
+  
+  createdAt       DateTime @default(now())
+  
+  @@index([cartId])
+  @@map("cart_item")
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  driverProfileId String
+  driverProfile   DriverProfile @relation(fields: [driverProfileId], references: [id])
+  
+  sponsorId       String
+  sponsor         Sponsor  @relation(fields: [sponsorId], references: [id])
+  
+  totalPoints     Int      // Total points spent on this order
+  status          String   @default("pending")
+  // pending | processing | shipped | delivered | cancelled
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  items           OrderItem[]
+  
+  @@index([driverProfileId])
+  @@index([sponsorId])
+  @@index([status])
+  @@map("order")
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  ebayItemId  String
+  title       String   @db.Text
+  imageUrl    String?  @db.Text
+  pointPrice  Int      // Points per item at time of purchase
+  quantity    Int
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([orderId])
+  @@map("order_item")
 }
