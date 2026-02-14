@@ -105,6 +105,10 @@ export default async function CatalogPage() {
                   {product.title}
                 </h3>
 
+                <h3 className="font-semibold text-base mb-2 line-clamp-2">
+                  {product.price / 0.01} Points
+                </h3>
+
                 <p className="text-xs text-gray-400 mb-3">
                   eBay ID: {product.ebayItemId}
                 </p>
