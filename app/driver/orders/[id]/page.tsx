@@ -2,21 +2,23 @@ import { requireDriver } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import CancelOrderButton from "@/app/components/orders/cancel-order-button";
 
 interface OrderPageProps {
-  params: Promise<{  // Change this to Promise
+  params: Promise<{
+    // Change this to Promise
     id: string;
   }>;
 }
 
 export default async function OrderPage({ params }: OrderPageProps) {
-  const { id } = await params;  // Await params here
-  
+  const { id } = await params; // Await params here
+
   const user = await requireDriver();
   const driverProfile = user.driverProfile!;
 
   const order = await prisma.order.findUnique({
-    where: { id },  // Use the awaited id
+    where: { id }, // Use the awaited id
     include: {
       items: true,
       sponsor: true,
@@ -35,7 +37,9 @@ export default async function OrderPage({ params }: OrderPageProps) {
     cancelled: "bg-red-100 text-red-800 border-red-300",
   };
 
-  const statusColor = statusColors[order.status as keyof typeof statusColors] || statusColors.pending;
+  const statusColor =
+    statusColors[order.status as keyof typeof statusColors] ||
+    statusColors.pending;
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -43,12 +47,26 @@ export default async function OrderPage({ params }: OrderPageProps) {
       {order.status === "pending" && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-3">
-            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-8 h-8 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <div>
-              <h2 className="text-xl font-bold text-green-900">Order Placed Successfully!</h2>
-              <p className="text-green-700 text-sm">Your order has been submitted and is being processed.</p>
+              <h2 className="text-xl font-bold text-green-900">
+                Order Placed Successfully!
+              </h2>
+              <p className="text-green-700 text-sm">
+                Your order has been submitted and is being processed.
+              </p>
             </div>
           </div>
         </div>
@@ -58,18 +76,23 @@ export default async function OrderPage({ params }: OrderPageProps) {
       <div className="bg-white border rounded-lg p-6 mb-6">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Order #{order.id.slice(-8)}</h1>
+            <h1 className="text-2xl font-bold mb-1">
+              Order #{order.id.slice(-8)}
+            </h1>
             <p className="text-gray-600 text-sm">
-              Placed on {new Date(order.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+              Placed on{" "}
+              {new Date(order.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </p>
           </div>
-          <div className={`px-4 py-2 rounded-lg border font-semibold text-sm ${statusColor}`}>
+          <div
+            className={`px-4 py-2 rounded-lg border font-semibold text-sm ${statusColor}`}
+          >
             {order.status.toUpperCase()}
           </div>
         </div>
@@ -90,10 +113,15 @@ export default async function OrderPage({ params }: OrderPageProps) {
 
       {/* Order Items */}
       <div className="bg-white border rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-bold mb-4">Order Items ({order.items.length})</h2>
+        <h2 className="text-xl font-bold mb-4">
+          Order Items ({order.items.length})
+        </h2>
         <div className="space-y-4">
           {order.items.map((item) => (
-            <div key={item.id} className="flex gap-4 pb-4 border-b last:border-b-0">
+            <div
+              key={item.id}
+              className="flex gap-4 pb-4 border-b last:border-b-0"
+            >
               {/* Image */}
               <div className="w-20 h-20 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center">
                 {item.imageUrl ? (
@@ -137,6 +165,7 @@ export default async function OrderPage({ params }: OrderPageProps) {
         >
           View All Orders
         </Link>
+        {order.status === "pending" && <CancelOrderButton orderId={order.id} />}
         <Link
           href="/driver/catalog"
           className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg text-center font-semibold hover:bg-gray-300 transition"
