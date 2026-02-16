@@ -2,12 +2,28 @@ import { prisma } from "@/lib/prisma";
 import { requireSponsorOrAdmin } from "@/lib/auth-helpers";
 import Link from "next/link";
 import CatalogActions from "@/app/components/catalog/catalog-actions";
+import CatalogSearch from "@/app/components/catalog/search-catalog";
 
-export default async function CatalogPage() {
+export default async function CatalogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>;
+})  {
   const { isAdmin, sponsorId } = await requireSponsorOrAdmin();
-
+  const { search } = await searchParams;
+  const searchQuery = search || "";
   const products = await prisma.catalogProduct.findMany({
-    where: isAdmin ? {} : { sponsorId: sponsorId! },
+    where: {
+    ...(isAdmin ? {} : { sponsorId: sponsorId! }),
+    ...(searchQuery 
+      ? {
+        OR: [
+          {  title: { contains: searchQuery}},
+          { ebayItemId: {contains: searchQuery }},
+          ],
+        }
+      : {}),
+  },
     include: {
       sponsor: true,
     },
@@ -18,6 +34,7 @@ export default async function CatalogPage() {
 
   const activeCount = products.filter((p) => p.isActive).length;
   const inactiveCount = products.filter((p) => !p.isActive).length;
+
 
   return (
     <div className="p-8">
@@ -38,7 +55,7 @@ export default async function CatalogPage() {
           + Add Products
         </Link>
       </div>
-
+      <CatalogSearch initialSearch={searchQuery} />
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-white p-4 rounded-lg border">
@@ -58,13 +75,17 @@ export default async function CatalogPage() {
       {/* Products */}
       {products.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 rounded-lg">
-          <p className="text-gray-600 mb-4">No products yet</p>
+          <p className="text-gray-600 mb-4">
+            {searchQuery ? "No products found matching your search": "No products yet"}
+             </p>
+            {!searchQuery && (
           <Link
             href="/sponsor/catalog/add"
             className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
           >
             Add Your First Product
           </Link>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -97,7 +118,7 @@ export default async function CatalogPage() {
               <div className="p-4">
                 {isAdmin && (
                   <p className="text-xs text-blue-600 font-semibold mb-2">
-                    {product.sponsor.name}
+                    {product.sponsorId}
                   </p>
                 )}
 
