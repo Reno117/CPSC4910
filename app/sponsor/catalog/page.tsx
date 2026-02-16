@@ -3,6 +3,7 @@ import { requireSponsorOrAdmin } from "@/lib/auth-helpers";
 import Link from "next/link";
 import CatalogActions from "@/app/components/catalog/catalog-actions";
 import CatalogSearch from "@/app/components/catalog/search-catalog";
+import ProductCard from "@/app/components/catalog/catalog-product-card";
 
 export default async function CatalogPage({
   searchParams,
@@ -90,57 +91,7 @@ export default async function CatalogPage({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
-            <div
-              key={product.id}
-              className={`bg-white border rounded-lg shadow-sm overflow-hidden ${
-                !product.isActive ? "opacity-60" : ""
-              }`}
-            >
-              {/* Image */}
-              <div className="h-48 bg-gray-100 flex items-center justify-center relative">
-                {product.imageUrl ? (
-                  <img
-                    src={product.imageUrl}
-                    alt={product.title}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                ) : (
-                  <div className="text-gray-400 text-sm">No image</div>
-                )}
-                {!product.isActive && (
-                  <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
-                    Inactive
-                  </div>
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="p-4">
-                {isAdmin && (
-                  <p className="text-xs text-blue-600 font-semibold mb-2">
-                    {product.sponsorId}
-                  </p>
-                )}
-
-                <h3 className="font-semibold text-base mb-2 line-clamp-2">
-                  {product.title}
-                </h3>
-
-                <h3 className="font-semibold text-base mb-2 line-clamp-2">
-                  {product.price / 0.01} Points
-                </h3>
-
-                <p className="text-xs text-gray-400 mb-3">
-                  eBay ID: {product.ebayItemId}
-                </p>
-
-                {/* Actions */}
-                <CatalogActions
-                  productId={product.id}
-                  isActive={product.isActive}
-                />
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} isAdmin={isAdmin} />
           ))}
         </div>
       )}
