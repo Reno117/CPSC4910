@@ -20,7 +20,12 @@ export default async function DriverCatalogPage() {
   let driverProfileId: string | null = null;
   let isViewingAsDriver = false;
 
-  // DRIVER VIEW
+  const isNewProduct = (createdAt: Date) => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    return new Date(createdAt) > sevenDaysAgo;
+  };
+
   if (user.role === "driver") {
     const driverProfile = user.driverProfile;
     if (!driverProfile) {
@@ -36,7 +41,6 @@ export default async function DriverCatalogPage() {
     isViewingAsDriver = true;
   }
 
-  // SPONSOR VIEW - see their own catalog
   else if (user.role === "sponsor") {
     const sponsorUser = user.sponsorUser;
     if (!sponsorUser) {
@@ -62,7 +66,6 @@ export default async function DriverCatalogPage() {
     isViewingAsDriver = false;
   }
 
-  // ADMIN VIEW - see all products from all sponsors
   else if (user.role === "admin") {
     products = await prisma.catalogProduct.findMany({
       where: {
@@ -76,14 +79,12 @@ export default async function DriverCatalogPage() {
       },
     });
 
-    // Admin sees all, so we'll use default point value for display
     pointValue = 0.01;
     isViewingAsDriver = false;
   }
 
   return (
     <div className="p-8">
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">
           {user.role === "admin" ? "All Products" : "Product Catalog"}
@@ -102,7 +103,6 @@ export default async function DriverCatalogPage() {
         )}
       </div>
 
-      {/* Balance Display (Driver Only) */}
       {isViewingAsDriver && (
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg mb-8 shadow-lg">
           <div className="flex justify-between items-center">
@@ -122,7 +122,6 @@ export default async function DriverCatalogPage() {
         </div>
       )}
 
-      {/* No Sponsor Warning (Driver Only) */}
       {user.role === "driver" && !sponsorName ? (
         <div className="text-center py-16 bg-gray-50 rounded-lg">
           <p className="text-gray-600 mb-4">
@@ -149,7 +148,6 @@ export default async function DriverCatalogPage() {
         </div>
       ) : (
         <>
-          {/* Product Count */}
           <div className="mb-4">
             <p className="text-gray-600">
               Showing {products.length} product
@@ -157,27 +155,31 @@ export default async function DriverCatalogPage() {
             </p>
           </div>
 
-          {/* Product Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => {
-              // Use product's sponsor pointValue if available (for admin view)
               const productPointValue =
                 product.sponsor?.pointValue || pointValue;
               const pointPrice = convertToPoints(
                 product.price,
                 productPointValue,
-              ); // Mock price for now
+              );
               const canAfford = isViewingAsDriver
                 ? currentBalance >= pointPrice
                 : true;
+              const showNewBadge = isNewProduct(product.createdAt);
 
               return (
                 <div
                   key={product.id}
                   className="bg-white border rounded-lg shadow-sm hover:shadow-md transition overflow-hidden"
                 >
-                  {/* Image */}
-                  <div className="h-48 bg-gray-100 flex items-center justify-center">
+                  <div className="h-48 bg-gray-100 flex items-center justify-center relative">
+                    {showNewBadge && (
+                      <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                        NEW
+                      </div>
+                    )}
+                    
                     {product.imageUrl ? (
                       <img
                         src={product.imageUrl}
@@ -204,9 +206,7 @@ export default async function DriverCatalogPage() {
                     )}
                   </div>
 
-                  {/* Content */}
                   <div className="p-4">
-                    {/* Admin: Show Sponsor Name */}
                     {user.role === "admin" && product.sponsor && (
                       <p className="text-xs text-blue-600 font-semibold mb-2">
                         {product.sponsor.name}
@@ -229,7 +229,6 @@ export default async function DriverCatalogPage() {
                       )}
                     </div>
 
-                    {/* Add to Cart Button (Driver Only) */}
                     {isViewingAsDriver ? (
                       <AddToCartButton
                         catalogProductId={product.id}
