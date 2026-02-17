@@ -1,3 +1,3 @@
 export function GET() {
-  return new Response("idk" + process.env.BETTER_AUTH_SECRET);
+  return new Response("idk" + JSON.stringify(process.env));
 }
