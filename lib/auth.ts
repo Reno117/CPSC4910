@@ -5,8 +5,6 @@ import { createAuthMiddleware } from "better-auth/api";
 
 
 export const auth = betterAuth({
-
-    secret: process.env.BETTER_AUTH_SECRET,
   hooks: {
         after: createAuthMiddleware(async (ctx) => {
             if(ctx.path.startsWith("/sign-up")){
