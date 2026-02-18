@@ -5,6 +5,7 @@ import { createAuthMiddleware } from "better-auth/api";
 
 
 export const auth = betterAuth({
+  trustedOrigins : ["http://localhost:3000", "https://main.d3snic3demckqa.amplifyapp.com/"],
   hooks: {
         after: createAuthMiddleware(async (ctx) => {
             if(ctx.path.startsWith("/sign-up")){
