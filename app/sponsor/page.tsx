@@ -10,17 +10,19 @@ export default async function SponsorDashboard() {
   // If admin, show all drivers; if sponsor, show only their drivers
   const drivers = await prisma.driverProfile.findMany({
     where: isAdmin
-      ? { status: "active" }
+      ? { }
       : { sponsorId: sponsorId!, status: "active" },
     select: {
       id: true,
       pointsBalance: true,
       sponsorId: true,
       createdAt: true,
+      status: true,
       user: {
         select: {
           name: true,
           email: true,
+          image: true, 
         },
       },
       sponsor: {
