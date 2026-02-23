@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import LogoutButton from "../components/logout-button";
 import { useRouter } from "next/navigation";
+import { handleAdminSignIn } from "@/app/actions/admin/handle-signin";
 import { handleDriverSignIn } from "@/app/actions/driver/handle-signin";
 import { handleSponsorSignIn } from "@/app/actions/sponsor/handle-signin";
 import Link from "next/link";
@@ -26,6 +27,12 @@ export default function Login() {
     let cancelled = false;
 
     const redirectIfNeeded = async () => {
+      const adminRedirect = await handleAdminSignIn();
+      if (!cancelled && adminRedirect) {
+        router.push(adminRedirect);
+        return;
+      }
+
       const driverRedirect = await handleDriverSignIn();
       if (!cancelled && driverRedirect) {
         router.push(driverRedirect);
@@ -63,6 +70,12 @@ export default function Login() {
 
       setEmail("");
       setPassword("");
+
+      const adminRedirect = await handleAdminSignIn();
+      if (adminRedirect) {
+        router.push(adminRedirect);
+        return;
+      }
 
       const driverRedirect = await handleDriverSignIn();
       if (driverRedirect) {
