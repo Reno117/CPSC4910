@@ -4,10 +4,13 @@ import CreateDriverForm from "@/app/components/create-driver-form";
 import ToDashBoard from "@/app/components/ToDashboard-Button";
 import { getCurrentUser } from "@/lib/auth-helpers";
 import SponsorHeader from "@/app/components/SponsorComponents/SponsorHeader";
-
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 export default async function CreateDriverPage() {
   const { isAdmin, sponsorId } = await requireSponsorOrAdmin();
-
+  const session = await auth.api.getSession({
+  headers: await headers(),
+});
   // If admin, fetch all sponsors for the dropdown
   const sponsors = isAdmin
     ? await prisma.sponsor.findMany({
@@ -15,10 +18,22 @@ export default async function CreateDriverPage() {
       })
     : undefined;
   const user = await getCurrentUser();
-
+    const userSettings = await prisma.user.findUnique({
+      where: {id: session?.user?.id},
+      select: {
+          name: true,
+          email: true,
+          role: true,
+          image: true,
+      },
+  });
+    if(!userSettings)
+  {
+    return null;
+  }
   return (
     <div>
-      <SponsorHeader />
+      <SponsorHeader userSettings= {userSettings}/>
       <div className="p-8 max-w-2xl mx-auto pt-20">
         <h1 className="text-3xl font-bold mb-6 text-center">Create New Driver</h1>
         <CreateDriverForm 

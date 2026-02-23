@@ -2,6 +2,7 @@ import { requireDriver } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CancelOrderButton from "@/app/components/orders/cancel-order-button";
+import DriverHeader from "@/app/components/DriverComponents/DriverHeader";
 
 export default async function OrdersPage() {
   const user = await requireDriver();
@@ -29,7 +30,10 @@ export default async function OrdersPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div>
+      <DriverHeader />
+
+      <div className="pt-20 p-8 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -170,6 +174,7 @@ export default async function OrdersPage() {
           })}
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -14,6 +14,7 @@ interface ProductCardProps {
     ebayItemId: string;
     sponsor: {
       name: string;
+      pointValue: number;
     };
   };
   isAdmin: boolean;
@@ -64,7 +65,7 @@ export default function ProductCard({ product, isAdmin }: ProductCardProps) {
           </h3>
 
           <h3 className="font-semibold text-base mb-2 line-clamp-2">
-            {product.price / 0.01} Points
+            {product.price / product.sponsor.pointValue} Points
           </h3>
 
           <p className="text-xs text-gray-400 mb-3">

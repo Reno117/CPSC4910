@@ -4,7 +4,31 @@ import { prisma } from "@/lib/prisma";
 import { requireDriver } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
-export async function checkout() {
+interface DeliveryInformation {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
+export async function checkout(deliveryInformation: DeliveryInformation) {
+  const requiredValues = [
+    deliveryInformation?.firstName,
+    deliveryInformation?.lastName,
+    deliveryInformation?.phoneNumber,
+    deliveryInformation?.address,
+    deliveryInformation?.city,
+    deliveryInformation?.state,
+    deliveryInformation?.zipCode,
+  ];
+
+  if (requiredValues.some((value) => !value || !value.trim())) {
+    throw new Error("All delivery information fields are required");
+  }
+
   const user = await requireDriver();
   const driverProfile = user.driverProfile!;
 

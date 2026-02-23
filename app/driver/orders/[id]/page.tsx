@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import CancelOrderButton from "@/app/components/orders/cancel-order-button";
+import DriverHeader from "@/app/components/DriverComponents/DriverHeader";
 
 interface OrderPageProps {
   params: Promise<{
@@ -42,7 +43,10 @@ export default async function OrderPage({ params }: OrderPageProps) {
     statusColors.pending;
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div>
+      <DriverHeader />
+
+      <div className="pt-20 p-8 max-w-4xl mx-auto">
       {/* Success Banner */}
       {order.status === "pending" && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
@@ -172,6 +176,7 @@ export default async function OrderPage({ params }: OrderPageProps) {
         >
           Continue Shopping
         </Link>
+      </div>
       </div>
     </div>
   );

@@ -3,12 +3,13 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import PointsButton from './points-button';
 import { updateDriverProfile } from '@/app/actions/sponsor/edit-driver-as-sponsor';
-
+import FireDriverButton from './Fire-Driver-Button';
 type Driver = {
   id: string;
   pointsBalance: number;
   status: string;
   sponsorId: string | null;
+  status: string
   user: {
     name: string;
     email: string;
@@ -186,6 +187,7 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
                   {driver.pointsBalance} points
                 </div>
               </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               {driver.sponsorId && (
                 <PointsButton
                   driverProfileId={driver.id}
@@ -194,6 +196,8 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
 
                 />
               )}
+              <FireDriverButton driver={driver} /> 
+              </div>
             </div>
           ))}
         </div>

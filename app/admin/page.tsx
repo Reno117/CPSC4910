@@ -1,8 +1,80 @@
-export default function AdminDashboard() {
+import AdminHeader from "../components/AdminComponents/AdminHeader";
+import ActiveUsersList from "../components/AdminComponents/ActiveUsersList";
+import { prisma } from "@/lib/prisma";
+
+export default async function AdminDashboard() {
+  const users = await prisma.user.findMany({
+    where: {
+      OR: [
+        { role: { not: "driver" } },
+        {
+          role: "driver",
+          driverProfile: {
+            is: {
+              status: "active",
+            },
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      emailVerified: true,
+      createdAt: true,
+      sponsorUser: {
+        select: {
+          sponsorId: true,
+          sponsor: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      driverProfile: {
+        select: {
+          id: true,
+          pointsBalance: true,
+          status: true,
+          sponsor: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  const formattedUsers = users.map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    emailVerified: user.emailVerified,
+    createdAt: user.createdAt.toISOString(),
+    sponsorId: user.sponsorUser?.sponsorId ?? null,
+    sponsorOrganization: user.sponsorUser?.sponsor?.name ?? null,
+    driverId: user.driverProfile?.id ?? null,
+    driverPointsBalance: user.driverProfile?.pointsBalance ?? null,
+    driverStatus: user.driverProfile?.status ?? null,
+    driverSponsorOrganization: user.driverProfile?.sponsor?.name ?? null,
+  }));
+
   return (
     <div>
-      <h1>Admin Dashboard</h1>
-      {/* Admin-specific content */}
+      <AdminHeader />
+
+      <main className="pt-24 px-6 min-h-screen flex flex-col items-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">Admin Dashboard</h1>
+        <ActiveUsersList users={formattedUsers} />
+      </main>
     </div>
   );
 }
