@@ -106,7 +106,7 @@ export default  function SponsorHeader({ userSettings }: HeaderProps) {
                         <li><Link href="/sponsor/catalog" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>View Catalog</Link></li>
                         <li><Link href="/sponsor/catalog/add" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>Add to Catalog</Link></li>
                         <li><Link href="/sponsor/view-orders" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>View Orders</Link></li>
-
+                        <li><Link href="/sponsor/sponsor-info" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>Sponsor Info</Link></li>
                     </ul>
                 </div>
             </div>
