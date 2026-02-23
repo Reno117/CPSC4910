@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { requireSponsorOrAdmin } from "@/lib/auth-helpers";
 import SponsorHeader from "@/app/components/SponsorComponents/SponsorHeader";
 import OrderCard from "@/app/components/orders/OrderCard";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function ViewOrders() {
   const { isAdmin, sponsorId } = await requireSponsorOrAdmin();
@@ -24,6 +26,19 @@ export default async function ViewOrders() {
     },
   });
 
+  const session = await auth.api.getSession({
+  headers: await headers(),
+  });
+  const user = await prisma.user.findUnique({
+    where: {id: session?.user?.id},
+    select: {
+        name: true,
+        email: true,
+        role: true,
+        image: true,
+    },
+});
+
   // Count by status
   const pending = orders.filter(o => o.status === "pending").length;
   const processing = orders.filter(o => o.status === "processing").length;
@@ -31,9 +46,12 @@ export default async function ViewOrders() {
   const delivered = orders.filter(o => o.status === "delivered").length;
   const cancelled = orders.filter(o => o.status === "cancelled").length;
 
+  if(!user) {
+    return null;
+  }
   return (
     <div>
-      <SponsorHeader />
+      <SponsorHeader userSettings={user}/>
       <div className="container mx-auto p-4 pt-20">
         {/* Header */}
         <div className="mb-6">
