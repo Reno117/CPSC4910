@@ -29,10 +29,6 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
-  const availableRoles = useMemo(() => {
-    return Array.from(new Set(users.map((user) => user.role.toLowerCase()))).sort();
-  }, [users]);
-
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
       const roleMatches = roleFilter === 'all' || user.role.toLowerCase() === roleFilter;
@@ -83,11 +79,9 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
           className="w-full md:w-52 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-400"
         >
           <option value="all">All Roles</option>
-          {availableRoles.map((role) => (
-            <option key={role} value={role}>
-              {formatRole(role)}
-            </option>
-          ))}
+          <option value="driver">Driver</option>
+          <option value="sponsor">Sponsor</option>
+          <option value="admin">Admin</option>
         </select>
       </div>
 
