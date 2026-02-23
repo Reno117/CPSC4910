@@ -3,19 +3,30 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
+import SettingsModal from '../Settings-Modal';
 
-export default function SponsorHeader() {
+interface User {
+  name: string;
+  email: string;
+  role: string;
+  image?: string | null;
+}
+interface HeaderProps {
+    userSettings: User;
+}
+
+export default  function SponsorHeader({ userSettings }: HeaderProps) {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const session = authClient.useSession();
     const user = session.data?.user as { name?: string | null; role?: string | null } | undefined;
     const displayName = user?.name ?? 'User';
     const displayRole = user?.role
         ? `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)}`
         : 'User';
-    
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
@@ -59,12 +70,17 @@ export default function SponsorHeader() {
                         🛒
                     </button>
                     <button
-                        onClick={() => {/* Handle settings click */}}
+                        onClick={() => {setIsOpen(true)}}
                         className="text-white text-2xl focus:outline-none hover:text-blue-200"
                         title="Settings"
                     >
                         ⚙️
                     </button>
+                     <SettingsModal
+                        user={userSettings}
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                    />
                     <button
                         onClick={() => setProfileOpen(!profileOpen)}
                         className="text-white text-2xl focus:outline-none hover:text-blue-200"
