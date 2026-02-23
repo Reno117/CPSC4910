@@ -9,6 +9,12 @@ export default function SponsorHeader() {
     const [lastScrollY, setLastScrollY] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const session = authClient.useSession();
+    const user = session.data?.user as { name?: string | null; role?: string | null } | undefined;
+    const displayName = user?.name ?? 'User';
+    const displayRole = user?.role
+        ? `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)}`
+        : 'User';
     
     useEffect(() => {
         const handleScroll = () => {
@@ -94,8 +100,8 @@ export default function SponsorHeader() {
         {profileOpen && (
             <div className="fixed top-16 right-4 bg-white shadow-lg rounded-md z-50 w-48">
                 <div className="p-4">
-                    <p className="text-sm text-gray-600">Logged in as: <strong>User</strong></p>
-                    <p className="text-sm text-gray-600">Role: <strong>Driver</strong></p>
+                    <p className="text-sm text-gray-600">Logged in as: <strong>{displayName}</strong></p>
+                    <p className="text-sm text-gray-600">Role: <strong>{displayRole}</strong></p>
                     <button
                         onClick={handleLogout}
                         className="mt-2 w-full bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600"

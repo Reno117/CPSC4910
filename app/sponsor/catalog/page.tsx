@@ -5,6 +5,7 @@ import CatalogActions from "@/app/components/catalog/catalog-actions";
 import CatalogSearch from "@/app/components/catalog/search-catalog";
 import ProductCard from "@/app/components/catalog/catalog-product-card";
 import UpdatePointsModal from "@/app/components/catalog/edit-pointconversion-button";
+import SponsorHeader from "@/app/components/SponsorComponents/SponsorHeader";
 
 export default async function CatalogPage({
   searchParams,
@@ -48,7 +49,9 @@ if (sponsorId) {
 
 
   return (
-    <div className="p-8">
+    <div>
+      <SponsorHeader />
+      <div className="p-8 pt-24">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -108,6 +111,7 @@ if (sponsorId) {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }
