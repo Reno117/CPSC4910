@@ -10,9 +10,7 @@ export default async function AdminDashboard() {
         {
           role: "driver",
           driverProfile: {
-            is: {
-              status: "active",
-            },
+            isNot: null,
           },
         },
       ],

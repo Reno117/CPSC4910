@@ -8,14 +8,8 @@ export default function AdminHeader() {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [profileOpen, setProfileOpen] = useState(false);
-
     const session = authClient.useSession();
-    const user = session.data?.user as { name?: string | null; role?: string | null } | undefined;
-    const displayName = user?.name ?? 'User';
-    const displayRole = user?.role
-        ? `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)}`
-        : 'Admin';
+    const user = session.data?.user as { name?: string | null; image?: string | null } | undefined;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -31,11 +25,6 @@ export default function AdminHeader() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
-
-    const handleLogout = async () => {
-        await authClient.signOut();
-        window.location.href = '/login';
-    };
 
     return (
         <>
@@ -61,13 +50,19 @@ export default function AdminHeader() {
                         >
                             ⚙️
                         </button>
-                        <button
-                            onClick={() => setProfileOpen(!profileOpen)}
-                            className="text-white text-2xl focus:outline-none hover:text-blue-200"
+                        <Link
+                            href="/admin/profile"
+                            className="w-9 h-9 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center overflow-hidden hover:opacity-80 transition flex-shrink-0"
                             title="Profile"
                         >
-                            👤
-                        </button>
+                            {user?.image ? (
+                                <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="text-white text-sm font-bold">
+                                    {(user?.name ?? 'A').charAt(0).toUpperCase()}
+                                </span>
+                            )}
+                        </Link>
                     </div>
                 </div>
             </header>
@@ -81,26 +76,12 @@ export default function AdminHeader() {
                             <li><Link href="/admin" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>Manage Users</Link></li>
                             <li><Link href="/admin" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>Create Users</Link></li>
                             <li><Link href="/admin" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>Create Sponsor Organization</Link></li>
-                            <li><Link href="/admin" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>Orders</Link></li>
+                            <li><Link href="/admin/all-orders" className="block p-2 hover:bg-gray-200 text-black-700 hover:text-blue-400 text-xl" onClick={() => setMenuOpen(false)}>Orders</Link></li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            {profileOpen && (
-                <div className="fixed top-16 right-4 bg-white shadow-lg rounded-md z-50 w-48">
-                    <div className="p-4">
-                        <p className="text-sm text-gray-600">Logged in as: <strong>{displayName}</strong></p>
-                        <p className="text-sm text-gray-600">Role: <strong>{displayRole}</strong></p>
-                        <button
-                            onClick={handleLogout}
-                            className="mt-2 w-full bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600"
-                        >
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            )}
         </>
     );
 }

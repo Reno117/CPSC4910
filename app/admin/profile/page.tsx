@@ -4,15 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
-export default function DriverProfilePage() {
+export default function AdminProfilePage() {
   const session = authClient.useSession();
   const user = session.data?.user;
   const router = useRouter();
 
   const [editForm, setEditForm] = useState({ name: "", email: "", address: "" });
   const [initialForm, setInitialForm] = useState({ name: "", email: "", address: "" });
-  const [sponsorName, setSponsorName] = useState<string | null>(null);
-  const [sponsorLoading, setSponsorLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
   const [avatarUploading, setAvatarUploading] = useState(false);
@@ -34,22 +32,6 @@ export default function DriverProfilePage() {
     editForm.name !== initialForm.name ||
     editForm.email !== initialForm.email ||
     editForm.address !== initialForm.address;
-
-  useEffect(() => {
-    const fetchSponsor = async () => {
-      setSponsorLoading(true);
-      try {
-        const res = await fetch("/api/user/sponsor/organization", { cache: "no-store" });
-        const data = await res.json();
-        setSponsorName(data?.sponsorName ?? null);
-      } catch {
-        setSponsorName(null);
-      } finally {
-        setSponsorLoading(false);
-      }
-    };
-    fetchSponsor();
-  }, []);
 
   const handleSave = async () => {
     if (!hasChanges) return;
@@ -127,7 +109,7 @@ export default function DriverProfilePage() {
                 />
               ) : (
                 <div className="w-24 h-24 rounded-full bg-blue-400 flex items-center justify-center text-white text-4xl font-bold border-4 border-blue-300">
-                  {(user?.name ?? "U").charAt(0).toUpperCase()}
+                  {(user?.name ?? "A").charAt(0).toUpperCase()}
                 </div>
               )}
 
@@ -150,10 +132,10 @@ export default function DriverProfilePage() {
 
             <p className="text-xs text-gray-400">Click photo to change</p>
             <h1 className="text-2xl font-bold text-gray-800 mt-2">
-              {user?.name ?? "User"}
+              {user?.name ?? "Admin"}
             </h1>
             <span className="text-sm text-gray-400 capitalize">
-              {(user as any)?.role ?? "Driver"}
+              {(user as any)?.role ?? "Admin"}
             </span>
           </div>
 
@@ -194,18 +176,6 @@ export default function DriverProfilePage() {
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800"
                 placeholder="123 Main St"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Sponsor
-                <span className="ml-2 text-xs text-gray-400 font-normal">
-                  (managed by sponsor)
-                </span>
-              </label>
-              <div className="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-2.5 text-sm text-gray-500 cursor-not-allowed">
-                {sponsorLoading ? "Loading..." : sponsorName ?? "No sponsor assigned"}
-              </div>
             </div>
           </div>
 

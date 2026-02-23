@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 const allowedStatuses = new Set(["pending", "active", "dropped"]);
 
 export async function updateDriverProfile(formData: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const driverId = String(formData.get("driverId") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
@@ -27,7 +27,7 @@ export async function updateDriverProfile(formData: FormData) {
 
   const existingDriver = await prisma.driverProfile.findUnique({
     where: { id: driverId },
-    select: { id: true, userId: true },
+    select: { id: true, userId: true, status: true },
   });
 
   if (!existingDriver) {
@@ -58,16 +58,62 @@ export async function updateDriverProfile(formData: FormData) {
       },
     });
 
+    let finalSponsorId = sponsorId;
+
+    // If status is being changed to "active", approve any pending applications
+    if (statusInput === "active" && existingDriver.status !== "active") {
+      // Auto-assign sponsor from first approved application if not explicitly set
+      if (!finalSponsorId) {
+        const approvedApp = await tx.driverApplication.findFirst({
+          where: {
+            driverProfileId: driverId,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        });
+        if (approvedApp) {
+          finalSponsorId = approvedApp.sponsorId;
+        }
+      }
+
+      await tx.driverApplication.updateMany({
+        where: {
+          driverProfileId: driverId,
+          status: "pending",
+        },
+        data: {
+          status: "approved",
+          reviewedBy: admin.id,
+        },
+      });
+    }
+
     await tx.driverProfile.update({
       where: { id: driverId },
       data: {
-        sponsorId,
+        sponsorId: finalSponsorId,
         status: statusInput,
       },
     });
+
+    // If status is being changed to "dropped", mark all applications as dropped
+    if (statusInput === "dropped" && existingDriver.status !== "dropped") {
+      await tx.driverApplication.updateMany({
+        where: {
+          driverProfileId: driverId,
+          status: { not: "rejected" }, // Don't change rejected applications
+        },
+        data: {
+          status: "dropped",
+        },
+      });
+    }
   });
 
   revalidatePath("/admin");
   revalidatePath(`/admin/${driverId}`);
+  revalidatePath("/driver/apply");
+  revalidatePath("/driver/profile");
   redirect(`/admin/${driverId}?saved=1`);
 }

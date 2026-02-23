@@ -10,6 +10,7 @@ export default function DriverProfilePage() {
   const router = useRouter();
 
   const [editForm, setEditForm] = useState({ name: "", email: "", address: "" });
+  const [initialForm, setInitialForm] = useState({ name: "", email: "", address: "" });
   const [sponsorName, setSponsorName] = useState<string | null>(null);
   const [sponsorLoading, setSponsorLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -19,13 +20,20 @@ export default function DriverProfilePage() {
 
   useEffect(() => {
     if (user) {
-      setEditForm({
+      const nextForm = {
         name: user.name ?? "",
         email: user.email ?? "",
         address: (user as any)?.address ?? "",
-      });
+      };
+      setEditForm(nextForm);
+      setInitialForm(nextForm);
     }
   }, [user]);
+
+  const hasChanges =
+    editForm.name !== initialForm.name ||
+    editForm.email !== initialForm.email ||
+    editForm.address !== initialForm.address;
 
   useEffect(() => {
     const fetchSponsor = async () => {
@@ -44,15 +52,23 @@ export default function DriverProfilePage() {
   }, []);
 
   const handleSave = async () => {
+    if (!hasChanges) return;
+
     setSaving(true);
     try {
       await authClient.updateUser({ name: editForm.name });
+      setInitialForm(editForm);
       setSaveMsg("Profile updated successfully!");
     } catch {
       setSaveMsg("Failed to update profile.");
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    window.location.href = "/login";
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,15 +217,19 @@ export default function DriverProfilePage() {
 
           <div className="flex gap-3 mt-6">
             <button
-              onClick={() => router.back()}
-              className="flex-1 border border-gray-300 text-gray-600 py-2.5 rounded-lg hover:bg-gray-100 transition text-sm"
+              onClick={handleLogout}
+              className="flex-1 bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition text-sm"
             >
-              Cancel
+              Logout
             </button>
             <button
               onClick={handleSave}
-              disabled={saving}
-              className="flex-1 bg-blue-400 text-white py-2.5 rounded-lg hover:bg-blue-500 transition text-sm disabled:opacity-60"
+              disabled={saving || !hasChanges}
+              className={`flex-1 py-2.5 rounded-lg transition text-sm ${
+                saving || !hasChanges
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-400 text-white hover:bg-blue-500"
+              }`}
             >
               {saving ? "Saving..." : "Save Changes"}
             </button>

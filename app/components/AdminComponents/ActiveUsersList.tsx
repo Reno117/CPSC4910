@@ -25,6 +25,7 @@ interface ActiveUsersListProps {
 export default function ActiveUsersList({ users }: ActiveUsersListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState<ActiveUser | null>(null);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -36,10 +37,14 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
         normalizedSearch.length === 0 ||
         user.name.toLowerCase().includes(normalizedSearch) ||
         user.email.toLowerCase().includes(normalizedSearch);
+      
+      const statusMatches = 
+        statusFilter === 'all' || 
+        user.driverStatus?.toLowerCase() === statusFilter;
 
-      return roleMatches && searchMatches;
+      return roleMatches && searchMatches && statusMatches;
     });
-  }, [users, roleFilter, normalizedSearch]);
+  }, [users, roleFilter, statusFilter, normalizedSearch]);
 
   const isDefaultAllUsersView = roleFilter === 'all' && normalizedSearch.length === 0;
 
@@ -62,7 +67,7 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
 
   return (
     <section className="w-full max-w-5xl bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-4">All Active Users</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-4">All Users</h2>
 
       <div className="flex flex-col md:flex-row gap-3 mb-6">
         <input
@@ -83,6 +88,17 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
           <option value="sponsor">Sponsor</option>
           <option value="admin">Admin</option>
         </select>
+
+        <select
+          value={statusFilter}
+          onChange={(event) => setStatusFilter(event.target.value)}
+          className="w-full md:w-48 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-400"
+        >
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="dropped">Dropped</option>
+        </select>
       </div>
 
       <p className="text-sm text-gray-600 mb-4">
@@ -92,7 +108,7 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
 
       {displayedUsers.length === 0 ? (
         <div className="rounded-md border border-gray-200 bg-gray-50 p-6 text-center text-gray-600">
-          No active users found.
+          No users found.
         </div>
       ) : (
         <div className="overflow-x-auto">

@@ -14,6 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [deactivatedModal, setDeactivatedModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -54,6 +55,7 @@ export default function Login() {
 
   const onSignIn = async () => {
     setError("");
+    setDeactivatedModal(false);
     setLoading(true);
 
     try {
@@ -63,7 +65,16 @@ export default function Login() {
       });
 
       if (result?.error) {
-        setError(result.error.message || "Invalid email or password");
+        const errorMsg = result.error.message || "Invalid email or password";
+        
+        // Check if this is a dropped account error
+        if (errorMsg.includes("dropped")) {
+          setDeactivatedModal(true);
+          setLoading(false);
+          return;
+        }
+        
+        setError(errorMsg);
         setLoading(false);
         return;
       }
@@ -177,6 +188,31 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* Deactivated Account Modal */}
+      {deactivatedModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-sm rounded-2xl border border-red-200 bg-white p-8 shadow-lg">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mx-auto">
+              <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4v2m0 4v2M4.22 4.22a10 10 0 1 1 14.14 14.14A10 10 0 0 1 4.22 4.22z" />
+              </svg>
+            </div>
+            <h3 className="mt-4 text-center text-lg font-semibold text-slate-900">
+              Account Deactivated
+            </h3>
+            <p className="mt-2 text-center text-sm text-slate-600">
+              Your account has been deactivated and you cannot sign in at this time. If you believe this is an error, please contact support.
+            </p>
+            <button
+              onClick={() => setDeactivatedModal(false)}
+              className="mt-6 w-full rounded-md bg-red-600 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

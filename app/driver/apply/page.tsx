@@ -17,6 +17,11 @@ export default async function ApplyPage() {
     },
     include: {
       sponsor: true,
+      reviewer: {
+        select: {
+          name: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
@@ -40,7 +45,9 @@ export default async function ApplyPage() {
                     ? "bg-yellow-50 border-yellow-300"
                     : app.status === "approved"
                       ? "bg-green-50 border-green-300"
-                      : "bg-red-50 border-red-300"
+                      : app.status === "dropped"
+                        ? "bg-gray-50 border-gray-300"
+                        : "bg-red-50 border-red-300"
                 }`}
               >
                 <div className="flex justify-between items-start">
@@ -52,6 +59,16 @@ export default async function ApplyPage() {
                         {app.status}
                       </span>
                     </p>
+                    {app.status === "approved" && app.reviewer && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Approved by: {app.reviewer.name}
+                      </p>
+                    )}
+                    {app.status === "dropped" && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Your account was dropped. You can reapply below.
+                      </p>
+                    )}
                     {app.reason && (
                       <p className="text-sm text-gray-600 mt-1">
                         Reason: {app.reason}
@@ -74,6 +91,7 @@ export default async function ApplyPage() {
         <ApplicationForm
           sponsors={sponsors}
           driverProfileId={user.driverProfile!.id}
+          existingApplications={existingApplications}
         />
       </div>
     </div>

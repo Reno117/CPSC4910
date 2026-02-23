@@ -9,9 +9,18 @@ interface ApplicationFormProps {
     name: string;
   }>;
   driverProfileId: string;
+  existingApplications?: Array<{
+    id: string;
+    sponsorId: string;
+    status: string;
+  }>;
 }
 
-export default function ApplicationForm({ sponsors, driverProfileId }: ApplicationFormProps) {
+export default function ApplicationForm({ 
+  sponsors, 
+  driverProfileId,
+  existingApplications = []
+}: ApplicationFormProps) {
   const [selectedSponsorId, setSelectedSponsorId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -40,6 +49,17 @@ export default function ApplicationForm({ sponsors, driverProfileId }: Applicati
     }
   };
 
+  // Get map of sponsor IDs to their application status
+  const appStatusBySponsor = new Map(
+    existingApplications.map((app) => [app.sponsorId, app.status])
+  );
+
+  // Filter out sponsors where driver has an approved application
+  const availableSponsos = sponsors.filter((sponsor) => {
+    const status = appStatusBySponsor.get(sponsor.id);
+    return status !== "approved"; // Allow pending, dropped, rejected, or no application
+  });
+
   return (
     <div>
       {error && (
@@ -66,11 +86,15 @@ export default function ApplicationForm({ sponsors, driverProfileId }: Applicati
             required
           >
             <option value="">-- Choose a sponsor --</option>
-            {sponsors.map((sponsor) => (
-              <option key={sponsor.id} value={sponsor.id}>
-                {sponsor.name}
-              </option>
-            ))}
+            {availableSponsos.map((sponsor) => {
+              const appStatus = appStatusBySponsor.get(sponsor.id);
+              const label = appStatus ? `${sponsor.name} (${appStatus} - reapply)` : sponsor.name;
+              return (
+                <option key={sponsor.id} value={sponsor.id}>
+                  {label}
+                </option>
+              );
+            })}
           </select>
         </div>
 

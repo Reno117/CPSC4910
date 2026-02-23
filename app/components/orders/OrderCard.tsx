@@ -117,7 +117,7 @@ export default function OrderCard({ order, isAdmin = false }: OrderCardProps) {
       {/* Order date + cancel button - UNCHANGED */}
       <div className="flex justify-between items-center text-sm text-gray-500 mt-2">
         Ordered: {new Date(order.createdAt).toLocaleDateString()}
-        <CancelOrderButton orderId={order.id} />
+        <CancelOrderButton orderId={order.id} canCancel={order.status === "pending"} />
       </div>
 
       {/* NEW: Sponsor/Admin Status Management */}
