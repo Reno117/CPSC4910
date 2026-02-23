@@ -10,6 +10,8 @@ export default function DriverHeader() {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
+    const session = authClient.useSession();
+    const user = session.data?.user;
     const [profileOpen, setProfileOpen] = useState(false);
     const [cartItemCount, setCartItemCount] = useState(0);
     const session = authClient.useSession();
@@ -67,6 +69,7 @@ export default function DriverHeader() {
     };
 
     return (
+
     <>
         <header className={`fixed top-0 w-full bg-blue-400 text-white transition-transform duration-300 z-50 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
             <div className="flex justify-between items-center p-4 h-16">
@@ -104,16 +107,30 @@ export default function DriverHeader() {
                     >
                         ⚙️
                     </button>
-                    <button
-                        onClick={() => setProfileOpen(!profileOpen)}
-                        className="text-white text-2xl focus:outline-none hover:text-blue-200"
-                        title="Profile"
-                    >
-                        👤
-                    </button>
+                        <button
+                            onClick={handleLogout}
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition"
+                            title="Logout"
+                        >
+                            Logout
+                        </button>
+                        {/* Avatar — links to profile page */}
+                        <Link
+                            href="/driver/profile"
+                            className="w-9 h-9 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center overflow-hidden hover:opacity-80 transition flex-shrink-0"
+                            title="Profile"
+                        >
+                            {(user as any)?.image ? (
+                                <img src={(user as any).image} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="text-white text-sm font-bold">
+                                    {(user?.name ?? 'D').charAt(0).toUpperCase()}
+                                </span>
+                            )}
+                        </Link>
                 </div>
-            </div>
-        </header>
+            </header>
+
 
         {/* Hamburger Menu Sidebar */}
         <div className={`fixed inset-0 z-40 transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -149,7 +166,6 @@ export default function DriverHeader() {
                     </button>
                 </div>
             </div>
-        )}
-    </>
-);
+        </>
+    );
 }

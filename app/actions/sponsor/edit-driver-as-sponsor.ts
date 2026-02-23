@@ -8,6 +8,7 @@ export async function updateDriverProfile(
   data: {
     name?: string;
     email?: string;
+    image?: string;
     phoneNumber?: string;
     licenseNumber?: string;
     pointsBalance?: number;
@@ -15,7 +16,6 @@ export async function updateDriverProfile(
 ) {
   const { user, isAdmin, sponsorId } = await requireSponsorOrAdmin();
 
-  // Verify driver exists and get their data
   const driverProfile = await prisma.driverProfile.findUnique({
     where: { id: driverProfileId },
     include: { user: true },
@@ -25,25 +25,22 @@ export async function updateDriverProfile(
     throw new Error("Driver not found");
   }
 
-  // Sponsors can only manage their own drivers, admins can manage any
   if (!isAdmin && driverProfile.sponsorId !== sponsorId) {
     throw new Error("Unauthorized: Driver not in your organization");
   }
 
-  // Update driver profile and user in a transaction
   await prisma.$transaction(async (tx) => {
-    // Update user information if name or email changed
-    if (data.name || data.email) {
+    if (data.name || data.email || data.image) {
       await tx.user.update({
         where: { id: driverProfile.userId },
         data: {
           ...(data.name && { name: data.name }),
           ...(data.email && { email: data.email }),
+          ...(data.image && { image: data.image }),
         },
       });
     }
 
-    // Update driver profile
     await tx.driverProfile.update({
       where: { id: driverProfileId },
       data: {
@@ -53,10 +50,8 @@ export async function updateDriverProfile(
       },
     });
 
-    // If points balance was changed, create a point change record
     if (data.pointsBalance !== undefined && data.pointsBalance !== driverProfile.pointsBalance) {
       const pointDifference = data.pointsBalance - driverProfile.pointsBalance;
-      
       await tx.pointChange.create({
         data: {
           driverProfileId: driverProfileId,
@@ -71,6 +66,6 @@ export async function updateDriverProfile(
 
   revalidatePath(`/sponsor/drivers`);
   revalidatePath(`/sponsor`);
-  
+
   return { success: true };
 }

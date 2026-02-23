@@ -20,6 +20,8 @@ export default  function SponsorHeader({ userSettings }: HeaderProps) {
     const [lastScrollY, setLastScrollY] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const session = authClient.useSession();
+    const user = session.data?.user;
     const [isOpen, setIsOpen] = useState(false);
     const session = authClient.useSession();
     const user = session.data?.user as { name?: string | null; role?: string | null } | undefined;
@@ -82,12 +84,26 @@ export default  function SponsorHeader({ userSettings }: HeaderProps) {
                         onClose={() => setIsOpen(false)}
                     />
                     <button
-                        onClick={() => setProfileOpen(!profileOpen)}
-                        className="text-white text-2xl focus:outline-none hover:text-blue-200"
-                        title="Profile"
-                    >
-                        👤
-                    </button>
+                            onClick={handleLogout}
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition"
+                            title="Logout"
+                        >
+                            Logout
+                        </button>
+                        {/* Avatar — links to profile page */}
+                        <Link
+                            href="/sponsor/profile"
+                            className="w-9 h-9 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center overflow-hidden hover:opacity-80 transition flex-shrink-0"
+                            title="Profile"
+                        >
+                            {(user as any)?.image ? (
+                                <img src={(user as any).image} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="text-white text-sm font-bold">
+                                    {(user?.name ?? 'D').charAt(0).toUpperCase()}
+                                </span>
+                            )}
+                        </Link>
                 </div>
             </div>
         </header>
