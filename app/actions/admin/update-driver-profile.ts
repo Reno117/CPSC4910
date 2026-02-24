@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-const allowedStatuses = new Set(["pending", "active", "dropped"]);
+const allowedStatuses = new Set(["pending", "active", "dropped", "disabled"]);
 
 export async function updateDriverProfile(formData: FormData) {
   const admin = await requireAdmin();
@@ -15,7 +15,9 @@ export async function updateDriverProfile(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const imageInput = String(formData.get("image") ?? "").trim();
   const sponsorIdInput = String(formData.get("sponsorId") ?? "").trim();
-  const statusInput = String(formData.get("status") ?? "").trim().toLowerCase();
+  const statusInput = String(formData.get("status") ?? "")
+    .trim()
+    .toLowerCase();
 
   if (!driverId || !name || !email) {
     redirect(`/admin/${driverId}?error=missing-required-fields`);

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import ToggleStatusButton from '@/app/components/AdminComponents/toggle-status-button';
 
 type ActiveUser = {
   id: string;
@@ -16,6 +17,8 @@ type ActiveUser = {
   driverPointsBalance: number | null;
   driverStatus: string | null;
   driverSponsorOrganization: string | null;
+  sponsorUserId?: string | null; // Add this if not present
+  sponsorUserStatus?: string | null; // Add this if not present
 };
 
 interface ActiveUsersListProps {
@@ -98,6 +101,7 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
           <option value="active">Active</option>
           <option value="pending">Pending</option>
           <option value="dropped">Dropped</option>
+          <option value="disabled">Disabled</option>
         </select>
       </div>
 
@@ -177,10 +181,24 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
                   </p>
                   <p>
                     <span className="font-semibold text-gray-900">Status:</span>{' '}
-                    {formatStatus(selectedUser.driverStatus)}
+                    <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
+                      selectedUser.driverStatus === 'active' ? 'bg-green-100 text-green-800' :
+                      selectedUser.driverStatus === 'disabled' ? 'bg-red-100 text-red-800' :
+                      selectedUser.driverStatus === 'dropped' ? 'bg-gray-100 text-gray-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {formatStatus(selectedUser.driverStatus)}
+                    </span>
                   </p>
+
+                  {/* NEW: Toggle Status Button for Drivers */}
                   {selectedUser.driverId && (
-                    <div className="pt-3">
+                    <div className="pt-3 space-y-3">
+                      <ToggleStatusButton
+                        profileId={selectedUser.driverId}
+                        currentStatus={selectedUser.driverStatus || 'active'}
+                        userType="driver"
+                      />
                       <Link
                         href={`/admin/${selectedUser.driverId}`}
                         className="inline-flex rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
@@ -202,9 +220,36 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
                     <span className="font-semibold text-gray-900">Sponsor Organization:</span>{' '}
                     {selectedUser.sponsorOrganization ?? 'Unassigned'}
                   </p>
+                  <p>
+                    <span className="font-semibold text-gray-900">Status:</span>{' '}
+                    <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
+                      selectedUser.sponsorUserStatus === 'active' ? 'bg-green-100 text-green-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {formatStatus(selectedUser.sponsorUserStatus ?? null)}
+                    </span>
+                  </p>
+
+                  {/* NEW: Toggle Status Button for Sponsors */}
+                  {selectedUser.sponsorUserId && (
+                    <div className="pt-3">
+                      <ToggleStatusButton
+                        profileId={selectedUser.sponsorUserId}
+                        currentStatus={selectedUser.sponsorUserStatus || 'active'}
+                        userType="sponsor"
+                      />
+                    </div>
+                  )}
                 </>
               )}
             </div>
+
+            <button
+              onClick={() => setSelectedUser(null)}
+              className="mt-6 w-full rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-300"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

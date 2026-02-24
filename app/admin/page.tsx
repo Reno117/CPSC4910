@@ -24,6 +24,8 @@ export default async function AdminDashboard() {
       createdAt: true,
       sponsorUser: {
         select: {
+          id: true,
+          status: true,
           sponsorId: true,
           sponsor: {
             select: {
@@ -59,6 +61,8 @@ export default async function AdminDashboard() {
     createdAt: user.createdAt.toISOString(),
     sponsorId: user.sponsorUser?.sponsorId ?? null,
     sponsorOrganization: user.sponsorUser?.sponsor?.name ?? null,
+    sponsorUserId: user.sponsorUser?.id ?? null,
+    sponsorUserStatus: user.sponsorUser?.status ?? null,
     driverId: user.driverProfile?.id ?? null,
     driverPointsBalance: user.driverProfile?.pointsBalance ?? null,
     driverStatus: user.driverProfile?.status ?? null,
@@ -70,7 +74,9 @@ export default async function AdminDashboard() {
       <AdminHeader />
 
       <main className="pt-24 px-6 min-h-screen flex flex-col items-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+          Admin Dashboard
+        </h1>
         <ActiveUsersList users={formattedUsers} />
       </main>
     </div>
