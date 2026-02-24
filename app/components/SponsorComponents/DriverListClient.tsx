@@ -7,7 +7,6 @@ import FireDriverButton from './Fire-Driver-Button';
 type Driver = {
   id: string;
   pointsBalance: number;
-  status: string;
   sponsorId: string | null;
   status: string
   user: {
