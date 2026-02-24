@@ -26,6 +26,7 @@ export async function requestRefund(orderId: string, reason: string) {
     throw new Error("Can only request refund for delivered orders");
   }
 
+  /* There is no refundRequest model yet, but this is where you would create it. For example:
   await prisma.refundRequest.create({
     data: {
       orderId,
@@ -35,4 +36,5 @@ export async function requestRefund(orderId: string, reason: string) {
   });
   
   return { success: true };
+  */
 }
