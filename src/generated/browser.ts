@@ -87,3 +87,8 @@ export type Order = Prisma.OrderModel
  * 
  */
 export type OrderItem = Prisma.OrderItemModel
+/**
+ * Model Verse
+ * 
+ */
+export type Verse = Prisma.VerseModel

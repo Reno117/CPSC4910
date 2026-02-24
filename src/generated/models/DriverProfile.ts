@@ -40,6 +40,7 @@ export type DriverProfileMinAggregateOutputType = {
   sponsorId: string | null
   pointsBalance: number | null
   status: string | null
+  address: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +51,7 @@ export type DriverProfileMaxAggregateOutputType = {
   sponsorId: string | null
   pointsBalance: number | null
   status: string | null
+  address: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +62,7 @@ export type DriverProfileCountAggregateOutputType = {
   sponsorId: number
   pointsBalance: number
   status: number
+  address: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,6 +83,7 @@ export type DriverProfileMinAggregateInputType = {
   sponsorId?: true
   pointsBalance?: true
   status?: true
+  address?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,6 +94,7 @@ export type DriverProfileMaxAggregateInputType = {
   sponsorId?: true
   pointsBalance?: true
   status?: true
+  address?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +105,7 @@ export type DriverProfileCountAggregateInputType = {
   sponsorId?: true
   pointsBalance?: true
   status?: true
+  address?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -197,6 +203,7 @@ export type DriverProfileGroupByOutputType = {
   sponsorId: string | null
   pointsBalance: number
   status: string
+  address: string | null
   createdAt: Date
   updatedAt: Date
   _count: DriverProfileCountAggregateOutputType | null
@@ -230,6 +237,7 @@ export type DriverProfileWhereInput = {
   sponsorId?: Prisma.StringNullableFilter<"DriverProfile"> | string | null
   pointsBalance?: Prisma.IntFilter<"DriverProfile"> | number
   status?: Prisma.StringFilter<"DriverProfile"> | string
+  address?: Prisma.StringNullableFilter<"DriverProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"DriverProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DriverProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -246,6 +254,7 @@ export type DriverProfileOrderByWithRelationInput = {
   sponsorId?: Prisma.SortOrderInput | Prisma.SortOrder
   pointsBalance?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -266,6 +275,7 @@ export type DriverProfileWhereUniqueInput = Prisma.AtLeast<{
   sponsorId?: Prisma.StringNullableFilter<"DriverProfile"> | string | null
   pointsBalance?: Prisma.IntFilter<"DriverProfile"> | number
   status?: Prisma.StringFilter<"DriverProfile"> | string
+  address?: Prisma.StringNullableFilter<"DriverProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"DriverProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DriverProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -282,6 +292,7 @@ export type DriverProfileOrderByWithAggregationInput = {
   sponsorId?: Prisma.SortOrderInput | Prisma.SortOrder
   pointsBalance?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DriverProfileCountOrderByAggregateInput
@@ -300,6 +311,7 @@ export type DriverProfileScalarWhereWithAggregatesInput = {
   sponsorId?: Prisma.StringNullableWithAggregatesFilter<"DriverProfile"> | string | null
   pointsBalance?: Prisma.IntWithAggregatesFilter<"DriverProfile"> | number
   status?: Prisma.StringWithAggregatesFilter<"DriverProfile"> | string
+  address?: Prisma.StringNullableWithAggregatesFilter<"DriverProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DriverProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DriverProfile"> | Date | string
 }
@@ -308,6 +320,7 @@ export type DriverProfileCreateInput = {
   id?: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDriverProfileInput
@@ -324,6 +337,7 @@ export type DriverProfileUncheckedCreateInput = {
   sponsorId?: string | null
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   applications?: Prisma.DriverApplicationUncheckedCreateNestedManyWithoutDriverProfileInput
@@ -336,6 +350,7 @@ export type DriverProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDriverProfileNestedInput
@@ -352,6 +367,7 @@ export type DriverProfileUncheckedUpdateInput = {
   sponsorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.DriverApplicationUncheckedUpdateManyWithoutDriverProfileNestedInput
@@ -366,6 +382,7 @@ export type DriverProfileCreateManyInput = {
   sponsorId?: string | null
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -374,6 +391,7 @@ export type DriverProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -384,6 +402,7 @@ export type DriverProfileUncheckedUpdateManyInput = {
   sponsorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -405,6 +424,7 @@ export type DriverProfileCountOrderByAggregateInput = {
   sponsorId?: Prisma.SortOrder
   pointsBalance?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  address?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -419,6 +439,7 @@ export type DriverProfileMaxOrderByAggregateInput = {
   sponsorId?: Prisma.SortOrder
   pointsBalance?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  address?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -429,6 +450,7 @@ export type DriverProfileMinOrderByAggregateInput = {
   sponsorId?: Prisma.SortOrder
   pointsBalance?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  address?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -594,6 +616,7 @@ export type DriverProfileCreateWithoutUserInput = {
   id?: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sponsor?: Prisma.SponsorCreateNestedOneWithoutDriversInput
@@ -608,6 +631,7 @@ export type DriverProfileUncheckedCreateWithoutUserInput = {
   sponsorId?: string | null
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   applications?: Prisma.DriverApplicationUncheckedCreateNestedManyWithoutDriverProfileInput
@@ -636,6 +660,7 @@ export type DriverProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sponsor?: Prisma.SponsorUpdateOneWithoutDriversNestedInput
@@ -650,6 +675,7 @@ export type DriverProfileUncheckedUpdateWithoutUserInput = {
   sponsorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.DriverApplicationUncheckedUpdateManyWithoutDriverProfileNestedInput
@@ -662,6 +688,7 @@ export type DriverProfileCreateWithoutSponsorInput = {
   id?: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDriverProfileInput
@@ -676,6 +703,7 @@ export type DriverProfileUncheckedCreateWithoutSponsorInput = {
   userId: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   applications?: Prisma.DriverApplicationUncheckedCreateNestedManyWithoutDriverProfileInput
@@ -719,6 +747,7 @@ export type DriverProfileScalarWhereInput = {
   sponsorId?: Prisma.StringNullableFilter<"DriverProfile"> | string | null
   pointsBalance?: Prisma.IntFilter<"DriverProfile"> | number
   status?: Prisma.StringFilter<"DriverProfile"> | string
+  address?: Prisma.StringNullableFilter<"DriverProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"DriverProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DriverProfile"> | Date | string
 }
@@ -727,6 +756,7 @@ export type DriverProfileCreateWithoutApplicationsInput = {
   id?: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDriverProfileInput
@@ -742,6 +772,7 @@ export type DriverProfileUncheckedCreateWithoutApplicationsInput = {
   sponsorId?: string | null
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   pointChanges?: Prisma.PointChangeUncheckedCreateNestedManyWithoutDriverProfileInput
@@ -769,6 +800,7 @@ export type DriverProfileUpdateWithoutApplicationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDriverProfileNestedInput
@@ -784,6 +816,7 @@ export type DriverProfileUncheckedUpdateWithoutApplicationsInput = {
   sponsorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pointChanges?: Prisma.PointChangeUncheckedUpdateManyWithoutDriverProfileNestedInput
@@ -795,6 +828,7 @@ export type DriverProfileCreateWithoutPointChangesInput = {
   id?: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDriverProfileInput
@@ -810,6 +844,7 @@ export type DriverProfileUncheckedCreateWithoutPointChangesInput = {
   sponsorId?: string | null
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   applications?: Prisma.DriverApplicationUncheckedCreateNestedManyWithoutDriverProfileInput
@@ -837,6 +872,7 @@ export type DriverProfileUpdateWithoutPointChangesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDriverProfileNestedInput
@@ -852,6 +888,7 @@ export type DriverProfileUncheckedUpdateWithoutPointChangesInput = {
   sponsorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.DriverApplicationUncheckedUpdateManyWithoutDriverProfileNestedInput
@@ -863,6 +900,7 @@ export type DriverProfileCreateWithoutCartInput = {
   id?: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDriverProfileInput
@@ -878,6 +916,7 @@ export type DriverProfileUncheckedCreateWithoutCartInput = {
   sponsorId?: string | null
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   applications?: Prisma.DriverApplicationUncheckedCreateNestedManyWithoutDriverProfileInput
@@ -905,6 +944,7 @@ export type DriverProfileUpdateWithoutCartInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDriverProfileNestedInput
@@ -920,6 +960,7 @@ export type DriverProfileUncheckedUpdateWithoutCartInput = {
   sponsorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.DriverApplicationUncheckedUpdateManyWithoutDriverProfileNestedInput
@@ -931,6 +972,7 @@ export type DriverProfileCreateWithoutOrdersInput = {
   id?: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDriverProfileInput
@@ -946,6 +988,7 @@ export type DriverProfileUncheckedCreateWithoutOrdersInput = {
   sponsorId?: string | null
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   applications?: Prisma.DriverApplicationUncheckedCreateNestedManyWithoutDriverProfileInput
@@ -973,6 +1016,7 @@ export type DriverProfileUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDriverProfileNestedInput
@@ -988,6 +1032,7 @@ export type DriverProfileUncheckedUpdateWithoutOrdersInput = {
   sponsorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.DriverApplicationUncheckedUpdateManyWithoutDriverProfileNestedInput
@@ -1000,6 +1045,7 @@ export type DriverProfileCreateManySponsorInput = {
   userId: string
   pointsBalance?: number
   status?: string
+  address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1008,6 +1054,7 @@ export type DriverProfileUpdateWithoutSponsorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDriverProfileNestedInput
@@ -1022,6 +1069,7 @@ export type DriverProfileUncheckedUpdateWithoutSponsorInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.DriverApplicationUncheckedUpdateManyWithoutDriverProfileNestedInput
@@ -1035,6 +1083,7 @@ export type DriverProfileUncheckedUpdateManyWithoutSponsorInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   pointsBalance?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1094,6 +1143,7 @@ export type DriverProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   sponsorId?: boolean
   pointsBalance?: boolean
   status?: boolean
+  address?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1113,11 +1163,12 @@ export type DriverProfileSelectScalar = {
   sponsorId?: boolean
   pointsBalance?: boolean
   status?: boolean
+  address?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DriverProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "sponsorId" | "pointsBalance" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["driverProfile"]>
+export type DriverProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "sponsorId" | "pointsBalance" | "status" | "address" | "createdAt" | "updatedAt", ExtArgs["result"]["driverProfile"]>
 export type DriverProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   sponsor?: boolean | Prisma.DriverProfile$sponsorArgs<ExtArgs>
@@ -1144,6 +1195,7 @@ export type $DriverProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     sponsorId: string | null
     pointsBalance: number
     status: string
+    address: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["driverProfile"]>
@@ -1526,6 +1578,7 @@ export interface DriverProfileFieldRefs {
   readonly sponsorId: Prisma.FieldRef<"DriverProfile", 'String'>
   readonly pointsBalance: Prisma.FieldRef<"DriverProfile", 'Int'>
   readonly status: Prisma.FieldRef<"DriverProfile", 'String'>
+  readonly address: Prisma.FieldRef<"DriverProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"DriverProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DriverProfile", 'DateTime'>
 }

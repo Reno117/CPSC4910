@@ -397,7 +397,8 @@ export const ModelName = {
   Cart: 'Cart',
   CartItem: 'CartItem',
   Order: 'Order',
-  OrderItem: 'OrderItem'
+  OrderItem: 'OrderItem',
+  Verse: 'Verse'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "driverProfile" | "sponsor" | "sponsorUser" | "driverApplication" | "pointChange" | "session" | "account" | "verification" | "catalogProduct" | "cart" | "cartItem" | "order" | "orderItem"
+    modelProps: "user" | "driverProfile" | "sponsor" | "sponsorUser" | "driverApplication" | "pointChange" | "session" | "account" | "verification" | "catalogProduct" | "cart" | "cartItem" | "order" | "orderItem" | "verse"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1341,6 +1342,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Verse: {
+      payload: Prisma.$VersePayload<ExtArgs>
+      fields: Prisma.VerseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload>
+        }
+        findFirst: {
+          args: Prisma.VerseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload>
+        }
+        findMany: {
+          args: Prisma.VerseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload>[]
+        }
+        create: {
+          args: Prisma.VerseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload>
+        }
+        createMany: {
+          args: Prisma.VerseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.VerseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload>
+        }
+        update: {
+          args: Prisma.VerseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload>
+        }
+        deleteMany: {
+          args: Prisma.VerseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.VerseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VersePayload>
+        }
+        aggregate: {
+          args: Prisma.VerseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerse>
+        }
+        groupBy: {
+          args: Prisma.VerseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerseCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1400,6 +1467,7 @@ export const DriverProfileScalarFieldEnum = {
   sponsorId: 'sponsorId',
   pointsBalance: 'pointsBalance',
   status: 'status',
+  address: 'address',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1567,6 +1635,25 @@ export const OrderItemScalarFieldEnum = {
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
 
 
+export const VerseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  book: 'book',
+  chapter: 'chapter',
+  verse: 'verse',
+  text: 'text',
+  translation: 'translation',
+  imageUrl: 'imageUrl',
+  isMemorized: 'isMemorized',
+  isSeed: 'isSeed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerseScalarFieldEnum = (typeof VerseScalarFieldEnum)[keyof typeof VerseScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1598,7 +1685,8 @@ export const DriverProfileOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
   sponsorId: 'sponsorId',
-  status: 'status'
+  status: 'status',
+  address: 'address'
 } as const
 
 export type DriverProfileOrderByRelevanceFieldEnum = (typeof DriverProfileOrderByRelevanceFieldEnum)[keyof typeof DriverProfileOrderByRelevanceFieldEnum]
@@ -1728,6 +1816,19 @@ export const OrderItemOrderByRelevanceFieldEnum = {
 } as const
 
 export type OrderItemOrderByRelevanceFieldEnum = (typeof OrderItemOrderByRelevanceFieldEnum)[keyof typeof OrderItemOrderByRelevanceFieldEnum]
+
+
+export const VerseOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  book: 'book',
+  text: 'text',
+  translation: 'translation',
+  imageUrl: 'imageUrl'
+} as const
+
+export type VerseOrderByRelevanceFieldEnum = (typeof VerseOrderByRelevanceFieldEnum)[keyof typeof VerseOrderByRelevanceFieldEnum]
 
 
 
@@ -1879,6 +1980,7 @@ export type GlobalOmitConfig = {
   cartItem?: Prisma.CartItemOmit
   order?: Prisma.OrderOmit
   orderItem?: Prisma.OrderItemOmit
+  verse?: Prisma.VerseOmit
 }
 
 /* Types for Logging */

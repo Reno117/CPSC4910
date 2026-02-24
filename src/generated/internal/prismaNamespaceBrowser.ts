@@ -64,7 +64,8 @@ export const ModelName = {
   Cart: 'Cart',
   CartItem: 'CartItem',
   Order: 'Order',
-  OrderItem: 'OrderItem'
+  OrderItem: 'OrderItem',
+  Verse: 'Verse'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -103,6 +104,7 @@ export const DriverProfileScalarFieldEnum = {
   sponsorId: 'sponsorId',
   pointsBalance: 'pointsBalance',
   status: 'status',
+  address: 'address',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -270,6 +272,25 @@ export const OrderItemScalarFieldEnum = {
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
 
 
+export const VerseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  book: 'book',
+  chapter: 'chapter',
+  verse: 'verse',
+  text: 'text',
+  translation: 'translation',
+  imageUrl: 'imageUrl',
+  isMemorized: 'isMemorized',
+  isSeed: 'isSeed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerseScalarFieldEnum = (typeof VerseScalarFieldEnum)[keyof typeof VerseScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -301,7 +322,8 @@ export const DriverProfileOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
   sponsorId: 'sponsorId',
-  status: 'status'
+  status: 'status',
+  address: 'address'
 } as const
 
 export type DriverProfileOrderByRelevanceFieldEnum = (typeof DriverProfileOrderByRelevanceFieldEnum)[keyof typeof DriverProfileOrderByRelevanceFieldEnum]
@@ -431,4 +453,17 @@ export const OrderItemOrderByRelevanceFieldEnum = {
 } as const
 
 export type OrderItemOrderByRelevanceFieldEnum = (typeof OrderItemOrderByRelevanceFieldEnum)[keyof typeof OrderItemOrderByRelevanceFieldEnum]
+
+
+export const VerseOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  book: 'book',
+  text: 'text',
+  translation: 'translation',
+  imageUrl: 'imageUrl'
+} as const
+
+export type VerseOrderByRelevanceFieldEnum = (typeof VerseOrderByRelevanceFieldEnum)[keyof typeof VerseOrderByRelevanceFieldEnum]
 
