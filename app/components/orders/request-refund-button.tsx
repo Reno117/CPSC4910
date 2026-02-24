@@ -6,24 +6,12 @@ import { useRouter } from "next/navigation";
 
 interface CancelOrderButtonProps {
   orderId: string;
-  canCancel?: boolean;
 }
 
-export default function CancelOrderButton({ orderId, canCancel = true }: CancelOrderButtonProps) {
+export default function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
-
-  if (!canCancel) {
-    return (
-      <button
-        disabled
-        className="bg-gray-200 text-gray-500 py-2 px-4 rounded-lg font-medium transition text-sm cursor-not-allowed"
-      >
-        Cancel Order
-      </button>
-    );
-  }
 
   const handleCancel = async () => {
     setLoading(true);

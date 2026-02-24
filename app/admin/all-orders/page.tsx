@@ -1,17 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { requireSponsorOrAdmin } from "@/lib/auth-helpers";
-import SponsorHeader from "@/app/components/SponsorComponents/SponsorHeader";
+import AdminHeader from "../../components/AdminComponents/AdminHeader";
 import OrderCard from "@/app/components/orders/OrderCard";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
-export default async function ViewOrders() {
-  const { isAdmin, sponsorId } = await requireSponsorOrAdmin();
-
+export default async function AdminAllOrdersPage() {
   const orders = await prisma.order.findMany({
-    where: isAdmin
-      ? {}
-      : { sponsorId: sponsorId! },
     include: {
       driverProfile: {
         include: {
@@ -26,44 +18,22 @@ export default async function ViewOrders() {
     },
   });
 
-  const session = await auth.api.getSession({
-  headers: await headers(),
-  });
-  const user = await prisma.user.findUnique({
-    where: {id: session?.user?.id},
-    select: {
-        name: true,
-        email: true,
-        role: true,
-        image: true,
-    },
-});
+  const pending = orders.filter((order) => order.status === "pending").length;
+  const processing = orders.filter((order) => order.status === "processing").length;
+  const shipped = orders.filter((order) => order.status === "shipped").length;
+  const delivered = orders.filter((order) => order.status === "delivered").length;
+  const cancelled = orders.filter((order) => order.status === "cancelled").length;
 
-  // Count by status
-  const pending = orders.filter(o => o.status === "pending").length;
-  const processing = orders.filter(o => o.status === "processing").length;
-  const shipped = orders.filter(o => o.status === "shipped").length;
-  const delivered = orders.filter(o => o.status === "delivered").length;
-  const cancelled = orders.filter(o => o.status === "cancelled").length;
-
-  if(!user) {
-    return null;
-  }
   return (
     <div>
-      <SponsorHeader userSettings={user}/>
+      <AdminHeader />
+
       <div className="container mx-auto p-4 pt-20">
-        {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-1">
-            {isAdmin ? "All Orders" : "Driver Orders"}
-          </h1>
-          <p className="text-gray-600">
-            Manage and update order statuses
-          </p>
+          <h1 className="text-3xl font-bold mb-1">All Orders</h1>
+          <p className="text-gray-600">Manage and update order statuses</p>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
           <div className="bg-white p-3 rounded-lg border text-center">
             <p className="text-xs text-gray-600 mb-1">Pending</p>
@@ -87,15 +57,14 @@ export default async function ViewOrders() {
           </div>
         </div>
 
-        {/* Orders */}
         {orders.length === 0 ? (
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <p className="text-gray-600">No orders yet</p>
           </div>
         ) : (
           <div className="space-y-4">
-            {orders.map(order => (
-              <OrderCard key={order.id} order={order} isAdmin={isAdmin} />
+            {orders.map((order) => (
+              <OrderCard key={order.id} order={order} isAdmin={true} />
             ))}
           </div>
         )}

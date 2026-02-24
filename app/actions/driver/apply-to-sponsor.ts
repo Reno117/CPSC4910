@@ -24,6 +24,21 @@ export async function applyToSponsor(
     );
   }
 
+  // Check if there's a dropped application - if so, delete it to allow reapplication
+  const droppedApplication = await prisma.driverApplication.findFirst({
+    where: {
+      driverProfileId: driverProfileId,
+      sponsorId: sponsorId,
+      status: "dropped",
+    },
+  });
+
+  if (droppedApplication) {
+    await prisma.driverApplication.delete({
+      where: { id: droppedApplication.id },
+    });
+  }
+
   // Create the application
   await prisma.driverApplication.create({
     data: {

@@ -7,6 +7,28 @@ import { createAuthMiddleware } from "better-auth/api";
 export const auth = betterAuth({
   trustedOrigins : ["http://localhost:3000", "https://main.d3snic3demckqa.amplifyapp.com"],
   hooks: {
+        before: createAuthMiddleware(async (ctx) => {
+            if (!ctx.path.startsWith("/sign-in")) return;
+
+            const email = (ctx.body as { email?: string } | undefined)?.email;
+            if (!email) return;
+
+            const user = await prisma.user.findUnique({
+              where: { email },
+              select: {
+                role: true,
+                driverProfile: {
+                  select: {
+                    status: true,
+                  },
+                },
+              },
+            });
+
+            if (user?.role === "driver" && user.driverProfile?.status === "dropped") {
+              throw new Error("This driver account has been dropped and can no longer sign in.");
+            }
+        }),
         after: createAuthMiddleware(async (ctx) => {
             if(ctx.path.startsWith("/sign-up")){
               console.log("ctx", ctx.body)

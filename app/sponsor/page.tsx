@@ -3,24 +3,40 @@ import { requireSponsorOrAdmin } from "@/lib/auth-helpers";
 import DriverLists from "../components/SponsorComponents/driver-list";
 import SponsorHeader from "../components/SponsorComponents/SponsorHeader"; 
 import DriverListClient from "../components/SponsorComponents/DriverListClient";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function SponsorDashboard() {
   const { isAdmin, sponsorId } = await requireSponsorOrAdmin();
-
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const user = await prisma.user.findUnique({
+      where: {id: session?.user?.id},
+      select: {
+          name: true,
+          email: true,
+          role: true,
+          image: true,
+      },
+  });
+      
   // If admin, show all drivers; if sponsor, show only their drivers
   const drivers = await prisma.driverProfile.findMany({
     where: isAdmin
-      ? { status: "active" }
+      ? { }
       : { sponsorId: sponsorId!, status: "active" },
     select: {
       id: true,
       pointsBalance: true,
       sponsorId: true,
       createdAt: true,
+      status: true,
       user: {
         select: {
           name: true,
           email: true,
+          image: true, 
         },
       },
       sponsor: {
@@ -33,10 +49,13 @@ export default async function SponsorDashboard() {
       createdAt: "desc",
     },
   });
-
+  if(!user)
+  {
+    return null;
+  }
   return (
     <div>
-      <SponsorHeader />
+      <SponsorHeader userSettings= {user}/>
 
       <div>
         <div className="w-full h-130 overflow-hidden">

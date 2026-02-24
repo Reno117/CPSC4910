@@ -1,0 +1,241 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+
+export default function DriverProfilePage() {
+  const session = authClient.useSession();
+  const user = session.data?.user;
+  const router = useRouter();
+
+  const [editForm, setEditForm] = useState({ name: "", email: "", address: "" });
+  const [initialForm, setInitialForm] = useState({ name: "", email: "", address: "" });
+  const [sponsorName, setSponsorName] = useState<string | null>(null);
+  const [sponsorLoading, setSponsorLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (user) {
+      const nextForm = {
+        name: user.name ?? "",
+        email: user.email ?? "",
+        address: (user as any)?.address ?? "",
+      };
+      setEditForm(nextForm);
+      setInitialForm(nextForm);
+    }
+  }, [user]);
+
+  const hasChanges =
+    editForm.name !== initialForm.name ||
+    editForm.email !== initialForm.email ||
+    editForm.address !== initialForm.address;
+
+  useEffect(() => {
+    const fetchSponsor = async () => {
+      setSponsorLoading(true);
+      try {
+        const res = await fetch("/api/user/sponsor/organization", { cache: "no-store" });
+        const data = await res.json();
+        setSponsorName(data?.sponsorName ?? null);
+      } catch {
+        setSponsorName(null);
+      } finally {
+        setSponsorLoading(false);
+      }
+    };
+    fetchSponsor();
+  }, []);
+
+  const handleSave = async () => {
+    if (!hasChanges) return;
+
+    setSaving(true);
+    try {
+      await authClient.updateUser({ name: editForm.name });
+      setInitialForm(editForm);
+      setSaveMsg("Profile updated successfully!");
+    } catch {
+      setSaveMsg("Failed to update profile.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    window.location.href = "/login";
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be under 2MB.");
+      return;
+    }
+
+    setAvatarUploading(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      await (authClient.updateUser as any)({ image: base64 });
+      await session.refetch();
+    } catch {
+      alert("Failed to upload avatar.");
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 pt-20 px-4">
+      <div className="max-w-lg mx-auto">
+        <button
+          onClick={() => router.back()}
+          className="mb-6 text-blue-400 hover:text-blue-500 flex items-center gap-1 text-sm"
+        >
+          ← Back
+        </button>
+
+        <div className="bg-white rounded-2xl shadow-md p-8">
+          <div className="flex flex-col items-center mb-8">
+            <div
+              className="relative cursor-pointer group w-24 h-24 mb-3"
+              onClick={() => fileInputRef.current?.click()}
+              title="Click to change photo"
+            >
+              {(user as any)?.image ? (
+                <img
+                  src={(user as any).image}
+                  alt="Profile"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-blue-400"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-blue-400 flex items-center justify-center text-white text-4xl font-bold border-4 border-blue-300">
+                  {(user?.name ?? "U").charAt(0).toUpperCase()}
+                </div>
+              )}
+
+              <div className="absolute inset-0 rounded-full bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                {avatarUploading ? (
+                  <span className="text-white text-sm">Uploading...</span>
+                ) : (
+                  <span className="text-white text-2xl">📷</span>
+                )}
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
+            </div>
+
+            <p className="text-xs text-gray-400">Click photo to change</p>
+            <h1 className="text-2xl font-bold text-gray-800 mt-2">
+              {user?.name ?? "User"}
+            </h1>
+            <span className="text-sm text-gray-400 capitalize">
+              {(user as any)?.role ?? "Driver"}
+            </span>
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={editForm.name}
+                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800"
+                placeholder="Your name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                value={editForm.email}
+                disabled
+                className="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-2.5 text-sm text-gray-500 cursor-not-allowed"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Address
+              </label>
+              <input
+                type="text"
+                value={editForm.address}
+                onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800"
+                placeholder="123 Main St"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Sponsor
+                <span className="ml-2 text-xs text-gray-400 font-normal">
+                  (managed by sponsor)
+                </span>
+              </label>
+              <div className="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-2.5 text-sm text-gray-500 cursor-not-allowed">
+                {sponsorLoading ? "Loading..." : sponsorName ?? "No sponsor assigned"}
+              </div>
+            </div>
+          </div>
+
+          {saveMsg && (
+            <p className={`mt-4 text-sm text-center ${saveMsg.includes("success") ? "text-green-500" : "text-red-500"}`}>
+              {saveMsg}
+            </p>
+          )}
+
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={handleLogout}
+              className="flex-1 bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition text-sm"
+            >
+              Logout
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving || !hasChanges}
+              className={`flex-1 py-2.5 rounded-lg transition text-sm ${
+                saving || !hasChanges
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-400 text-white hover:bg-blue-500"
+              }`}
+            >
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
