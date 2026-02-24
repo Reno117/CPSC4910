@@ -1490,6 +1490,7 @@ export const SponsorUserScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   sponsorId: 'sponsorId',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1703,7 +1704,8 @@ export type SponsorOrderByRelevanceFieldEnum = (typeof SponsorOrderByRelevanceFi
 export const SponsorUserOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
-  sponsorId: 'sponsorId'
+  sponsorId: 'sponsorId',
+  status: 'status'
 } as const
 
 export type SponsorUserOrderByRelevanceFieldEnum = (typeof SponsorUserOrderByRelevanceFieldEnum)[keyof typeof SponsorUserOrderByRelevanceFieldEnum]

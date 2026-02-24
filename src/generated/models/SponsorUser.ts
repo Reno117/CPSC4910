@@ -28,6 +28,7 @@ export type SponsorUserMinAggregateOutputType = {
   id: string | null
   userId: string | null
   sponsorId: string | null
+  status: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -36,6 +37,7 @@ export type SponsorUserMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   sponsorId: string | null
+  status: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +46,7 @@ export type SponsorUserCountAggregateOutputType = {
   id: number
   userId: number
   sponsorId: number
+  status: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -54,6 +57,7 @@ export type SponsorUserMinAggregateInputType = {
   id?: true
   userId?: true
   sponsorId?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -62,6 +66,7 @@ export type SponsorUserMaxAggregateInputType = {
   id?: true
   userId?: true
   sponsorId?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -70,6 +75,7 @@ export type SponsorUserCountAggregateInputType = {
   id?: true
   userId?: true
   sponsorId?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -151,6 +157,7 @@ export type SponsorUserGroupByOutputType = {
   id: string
   userId: string
   sponsorId: string
+  status: string
   createdAt: Date
   updatedAt: Date
   _count: SponsorUserCountAggregateOutputType | null
@@ -180,6 +187,7 @@ export type SponsorUserWhereInput = {
   id?: Prisma.StringFilter<"SponsorUser"> | string
   userId?: Prisma.StringFilter<"SponsorUser"> | string
   sponsorId?: Prisma.StringFilter<"SponsorUser"> | string
+  status?: Prisma.StringFilter<"SponsorUser"> | string
   createdAt?: Prisma.DateTimeFilter<"SponsorUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SponsorUser"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -190,6 +198,7 @@ export type SponsorUserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   sponsorId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -204,6 +213,7 @@ export type SponsorUserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.SponsorUserWhereInput[]
   NOT?: Prisma.SponsorUserWhereInput | Prisma.SponsorUserWhereInput[]
   sponsorId?: Prisma.StringFilter<"SponsorUser"> | string
+  status?: Prisma.StringFilter<"SponsorUser"> | string
   createdAt?: Prisma.DateTimeFilter<"SponsorUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SponsorUser"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -214,6 +224,7 @@ export type SponsorUserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   sponsorId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.SponsorUserCountOrderByAggregateInput
@@ -228,12 +239,14 @@ export type SponsorUserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"SponsorUser"> | string
   userId?: Prisma.StringWithAggregatesFilter<"SponsorUser"> | string
   sponsorId?: Prisma.StringWithAggregatesFilter<"SponsorUser"> | string
+  status?: Prisma.StringWithAggregatesFilter<"SponsorUser"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SponsorUser"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SponsorUser"> | Date | string
 }
 
 export type SponsorUserCreateInput = {
   id?: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSponsorUserInput
@@ -244,12 +257,14 @@ export type SponsorUserUncheckedCreateInput = {
   id?: string
   userId: string
   sponsorId: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type SponsorUserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSponsorUserNestedInput
@@ -260,6 +275,7 @@ export type SponsorUserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   sponsorId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -268,12 +284,14 @@ export type SponsorUserCreateManyInput = {
   id?: string
   userId: string
   sponsorId: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type SponsorUserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -282,6 +300,7 @@ export type SponsorUserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   sponsorId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -311,6 +330,7 @@ export type SponsorUserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   sponsorId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -319,6 +339,7 @@ export type SponsorUserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   sponsorId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -327,6 +348,7 @@ export type SponsorUserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   sponsorId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -407,6 +429,7 @@ export type SponsorUserUncheckedUpdateManyWithoutSponsorNestedInput = {
 
 export type SponsorUserCreateWithoutUserInput = {
   id?: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sponsor: Prisma.SponsorCreateNestedOneWithoutSponsorUsersInput
@@ -415,6 +438,7 @@ export type SponsorUserCreateWithoutUserInput = {
 export type SponsorUserUncheckedCreateWithoutUserInput = {
   id?: string
   sponsorId: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -437,6 +461,7 @@ export type SponsorUserUpdateToOneWithWhereWithoutUserInput = {
 
 export type SponsorUserUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sponsor?: Prisma.SponsorUpdateOneRequiredWithoutSponsorUsersNestedInput
@@ -445,12 +470,14 @@ export type SponsorUserUpdateWithoutUserInput = {
 export type SponsorUserUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sponsorId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SponsorUserCreateWithoutSponsorInput = {
   id?: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSponsorUserInput
@@ -459,6 +486,7 @@ export type SponsorUserCreateWithoutSponsorInput = {
 export type SponsorUserUncheckedCreateWithoutSponsorInput = {
   id?: string
   userId: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -496,6 +524,7 @@ export type SponsorUserScalarWhereInput = {
   id?: Prisma.StringFilter<"SponsorUser"> | string
   userId?: Prisma.StringFilter<"SponsorUser"> | string
   sponsorId?: Prisma.StringFilter<"SponsorUser"> | string
+  status?: Prisma.StringFilter<"SponsorUser"> | string
   createdAt?: Prisma.DateTimeFilter<"SponsorUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SponsorUser"> | Date | string
 }
@@ -503,12 +532,14 @@ export type SponsorUserScalarWhereInput = {
 export type SponsorUserCreateManySponsorInput = {
   id?: string
   userId: string
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type SponsorUserUpdateWithoutSponsorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSponsorUserNestedInput
@@ -517,6 +548,7 @@ export type SponsorUserUpdateWithoutSponsorInput = {
 export type SponsorUserUncheckedUpdateWithoutSponsorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -524,6 +556,7 @@ export type SponsorUserUncheckedUpdateWithoutSponsorInput = {
 export type SponsorUserUncheckedUpdateManyWithoutSponsorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -534,6 +567,7 @@ export type SponsorUserSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   userId?: boolean
   sponsorId?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -546,11 +580,12 @@ export type SponsorUserSelectScalar = {
   id?: boolean
   userId?: boolean
   sponsorId?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SponsorUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "sponsorId" | "createdAt" | "updatedAt", ExtArgs["result"]["sponsorUser"]>
+export type SponsorUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "sponsorId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["sponsorUser"]>
 export type SponsorUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   sponsor?: boolean | Prisma.SponsorDefaultArgs<ExtArgs>
@@ -566,6 +601,7 @@ export type $SponsorUserPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: string
     userId: string
     sponsorId: string
+    status: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["sponsorUser"]>
@@ -942,6 +978,7 @@ export interface SponsorUserFieldRefs {
   readonly id: Prisma.FieldRef<"SponsorUser", 'String'>
   readonly userId: Prisma.FieldRef<"SponsorUser", 'String'>
   readonly sponsorId: Prisma.FieldRef<"SponsorUser", 'String'>
+  readonly status: Prisma.FieldRef<"SponsorUser", 'String'>
   readonly createdAt: Prisma.FieldRef<"SponsorUser", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"SponsorUser", 'DateTime'>
 }

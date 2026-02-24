@@ -83,6 +83,9 @@ model SponsorUser {
   
   sponsorId  String
   sponsor    Sponsor  @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
+
+  status     String   @default("active")  // ADD THIS
+
   
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

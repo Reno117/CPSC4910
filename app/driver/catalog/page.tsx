@@ -5,10 +5,13 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import AddToCartButton from "@/app/components/catalog/add-to-cart-button";
 import DriverHeader from "@/app/components/DriverComponents/DriverHeader";
+import { checkDriverNotDisabled } from "@/lib/auth-helpers";
 
 
 export default async function DriverCatalogPage() {
   const user = await getCurrentUser();
+  await checkDriverNotDisabled();
+  
 
   if (!user) {
     throw new Error("Unauthorized");
