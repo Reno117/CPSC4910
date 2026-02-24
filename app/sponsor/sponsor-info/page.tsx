@@ -22,28 +22,30 @@ export default async function SponsorDashboard() {
   });
 
   // Fetch the sponsor organization (skip if admin viewing all)
-  const sponsor = !isAdmin && sponsorId
-    ? await prisma.sponsor.findUnique({
-        where: { id: sponsorId },
-        select: { name: true },
-      })
-    : null;
+  const sponsor =
+    !isAdmin && sponsorId
+      ? await prisma.sponsor.findUnique({
+          where: { id: sponsorId },
+          select: { name: true },
+        })
+      : null;
 
   // Fetch sponsor users (users associated with this sponsor org)
-  const sponsorUsers = !isAdmin && sponsorId
-    ? await prisma.user.findMany({
-        where: { 
+  const sponsorUsers =
+    !isAdmin && sponsorId
+      ? await prisma.user.findMany({
+          where: {
             sponsorUser: {
-                sponsorId: sponsorId,
-            }
-        },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      })
-    : [];
+              sponsorId: sponsorId,
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        })
+      : [];
 
   const drivers = await prisma.driverProfile.findMany({
     where: isAdmin
@@ -54,6 +56,7 @@ export default async function SponsorDashboard() {
       pointsBalance: true,
       sponsorId: true,
       createdAt: true,
+      status: true,
       user: {
         select: {
           name: true,
@@ -85,61 +88,81 @@ export default async function SponsorDashboard() {
         />
       </div>
 
-      <div style={{
-        padding: '60px 100px',
-        fontFamily: 'Arial, sans-serif',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100vh',
-      }}>
-
+      <div
+        style={{
+          padding: "60px 100px",
+          fontFamily: "Arial, sans-serif",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
         {/* Sponsor Name */}
         {sponsor && (
-          <h1 style={{ fontSize: '40px', color: '#222', marginBottom: '40px' }}>
+          <h1 style={{ fontSize: "40px", color: "#222", marginBottom: "40px" }}>
             {sponsor.name}
           </h1>
         )}
         {isAdmin && (
-          <h1 style={{ fontSize: '40px', color: '#222', marginBottom: '40px' }}>
+          <h1 style={{ fontSize: "40px", color: "#222", marginBottom: "40px" }}>
             Admin Overview
           </h1>
         )}
 
         {/* Side-by-side lists */}
-        <div style={{
-          display: 'flex',
-          gap: '40px',
-          width: '100%',
-          maxWidth: '1200px',
-          alignItems: 'flex-start',
-        }}>
-
+        <div
+          style={{
+            display: "flex",
+            gap: "40px",
+            width: "100%",
+            maxWidth: "1200px",
+            alignItems: "flex-start",
+          }}
+        >
           {/* Sponsor Users List */}
           {!isAdmin && (
-            <div style={{
-              flex: 1,
-              backgroundColor: '#f5f5f5',
-              borderRadius: '8px',
-              padding: '20px',
-            }}>
-              <h2 style={{ marginTop: 0, color: '#333', textAlign: 'center', fontSize: '28px' }}>
+            <div
+              style={{
+                flex: 1,
+                backgroundColor: "#f5f5f5",
+                borderRadius: "8px",
+                padding: "20px",
+              }}
+            >
+              <h2
+                style={{
+                  marginTop: 0,
+                  color: "#333",
+                  textAlign: "center",
+                  fontSize: "28px",
+                }}
+              >
                 Sponsor Users
               </h2>
               {sponsorUsers.length === 0 ? (
-                <p style={{ textAlign: 'center', color: '#666' }}>No sponsor users found</p>
+                <p style={{ textAlign: "center", color: "#666" }}>
+                  No sponsor users found
+                </p>
               ) : (
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                   {sponsorUsers.map((u) => (
-                    <li key={u.id} style={{
-                      padding: '12px 16px',
-                      borderBottom: '1px solid #ddd',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                    }}>
-                      <span style={{ fontWeight: 'bold', color: '#333' }}>{u.name}</span>
-                      <span style={{ fontSize: '14px', color: '#666' }}>{u.email}</span>
+                    <li
+                      key={u.id}
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: "1px solid #ddd",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px",
+                      }}
+                    >
+                      <span style={{ fontWeight: "bold", color: "#333" }}>
+                        {u.name}
+                      </span>
+                      <span style={{ fontSize: "14px", color: "#666" }}>
+                        {u.email}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -148,22 +171,36 @@ export default async function SponsorDashboard() {
           )}
 
           {/* Drivers List */}
-          <div style={{
-            flex: 1,
-            backgroundColor: '#f5f5f5',
-            borderRadius: '8px',
-            padding: '20px',
-          }}>
-            <h2 style={{ marginTop: 0, color: '#333', textAlign: 'center', fontSize: '28px' }}>
+          <div
+            style={{
+              flex: 1,
+              backgroundColor: "#f5f5f5",
+              borderRadius: "8px",
+              padding: "20px",
+            }}
+          >
+            <h2
+              style={{
+                marginTop: 0,
+                color: "#333",
+                textAlign: "center",
+                fontSize: "28px",
+              }}
+            >
               {isAdmin ? "All Registered Drivers" : "Registered Drivers"}
             </h2>
             {drivers.length === 0 ? (
-              <p style={{ textAlign: 'center', color: '#666' }}>No registered drivers</p>
+              <p style={{ textAlign: "center", color: "#666" }}>
+                No registered drivers
+              </p>
             ) : (
-              <DriverListClient drivers={drivers} isAdmin={isAdmin} initialCount={10} />
+              <DriverListClient
+                drivers={drivers}
+                isAdmin={isAdmin}
+                initialCount={10}
+              />
             )}
           </div>
-
         </div>
       </div>
     </div>
