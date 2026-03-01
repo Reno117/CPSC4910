@@ -25,11 +25,14 @@ interface ActiveUsersListProps {
   users: ActiveUser[];
 }
 
+const PAGE_SIZE = 15;
+
 export default function ActiveUsersList({ users }: ActiveUsersListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState<ActiveUser | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
@@ -49,15 +52,25 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
     });
   }, [users, roleFilter, statusFilter, normalizedSearch]);
 
-  const isDefaultAllUsersView = roleFilter === 'all' && normalizedSearch.length === 0;
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
 
   const displayedUsers = useMemo(() => {
-    if (isDefaultAllUsersView) {
-      return filteredUsers.slice(0, 15);
-    }
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredUsers.slice(start, start + PAGE_SIZE);
+  }, [filteredUsers, currentPage]);
 
-    return filteredUsers;
-  }, [filteredUsers, isDefaultAllUsersView]);
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRoleFilter(e.target.value);
+    setCurrentPage(1);
+  };
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatusFilter(e.target.value);
+    setCurrentPage(1);
+  };
 
   const formatRole = (role: string) => {
     return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
@@ -77,13 +90,13 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
           type="text"
           placeholder="Search by name or email"
           value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
+          onChange = {handleSearchChange}
           className="w-full md:flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 outline-none focus:border-blue-400"
         />
 
         <select
           value={roleFilter}
-          onChange={(event) => setRoleFilter(event.target.value)}
+          onChange = {handleRoleChange}
           className="w-full md:w-52 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-400"
         >
           <option value="all">All Roles</option>
@@ -94,7 +107,7 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
 
         <select
           value={statusFilter}
-          onChange={(event) => setStatusFilter(event.target.value)}
+          onChange ={handleStatusChange}
           className="w-full md:w-48 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-400"
         >
           <option value="all">All Statuses</option>
@@ -106,8 +119,8 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
       </div>
 
       <p className="text-sm text-gray-600 mb-4">
-        Showing {displayedUsers.length}
-        {isDefaultAllUsersView ? ` of ${filteredUsers.length}` : ''} users
+        Showing {displayedUsers.length} of {filteredUsers.length} users
+        — Page {currentPage} of {totalPages}
       </p>
 
       {displayedUsers.length === 0 ? (
@@ -242,6 +255,35 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
                   )}
                 </>
               )}
+              {/*
+              {selectedUser.role.toLowerCase() === 'admin' && (
+                <>
+                  <p>
+                    <span className="font-semibold text-gray-900">Admin ID:</span>{' '}
+                    {selectedUser.id ?? 'N/A'}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-gray-900">Status:</span>{' '}
+                    <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
+                      selectedUser.sponsorUserStatus === 'active' ? 'bg-green-100 text-green-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {formatStatus(selectedUser.sponsorUserStatus ?? null)}
+                    </span>
+                  </p>
+
+                   { NEW: Toggle Status Button for Admins }
+                  {selectedUser.id && (
+                    <div className="pt-3">
+                      <ToggleStatusButton
+                        profileId={selectedUser.id}
+                        /*currentStatus={selectedUser.sponsorUserStatus || 'active'} 
+                        userType="admin" 
+                      />
+                    </div>
+                  )}
+                </> 
+              )} */}
             </div>
 
             <button
@@ -253,6 +295,25 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
           </div>
         </div>
       )}
+      <div className="flex items-center justify-between mt-4">
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+          disabled={currentPage === 1}
+          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          ← Previous
+        </button>
+        <span className="text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+          disabled={currentPage === totalPages}
+          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Next →
+        </button>
+      </div>
     </section>
   );
 }
