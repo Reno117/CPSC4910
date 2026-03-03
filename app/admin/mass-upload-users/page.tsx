@@ -1,21 +1,13 @@
 import { getCurrentUser } from "@/lib/auth-helpers";
 import CreateMassUsersAsSponsor from "@/app/components/AdminComponents/CreateMassUsersAsAdmin";
-import SponsorHeader from "@/app/components/SponsorComponents/SponsorHeader";
+import AdminHeader from "@/app/components/AdminComponents/AdminHeader";
 
 export default async function CreateSponsorPage() {
   const currentUser = await getCurrentUser();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      <SponsorHeader
-        userSettings={{
-          name: currentUser?.name ?? "",
-          email: currentUser?.email ?? "",
-          role: currentUser?.role ?? "",
-          image: currentUser?.image ?? "",
-        }}
-      />
-
+      <AdminHeader />
       <main className="px-4 pt-24 pb-10 sm:px-8">
         <div className="max-w-2xl mx-auto">
           {/* Page title */}
