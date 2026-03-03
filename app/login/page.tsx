@@ -13,6 +13,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [deactivatedModal, setDeactivatedModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,6 +22,48 @@ export default function Login() {
   const session = authClient.useSession();
   const isLoggedIn = session.data?.user != null;
   const userRole = session.data?.user?.role;
+
+  // Handle Remember Me checkbox change
+  const handleRememberMeChange = (checked: boolean) => {
+    setRememberMe(checked);
+    
+    // If unchecked, immediately clear localStorage
+    if (!checked) {
+      try {
+        console.log("Remember Me unchecked - clearing stored credentials");
+        localStorage.removeItem("rememberedEmail");
+        localStorage.removeItem("rememberedPassword");
+        localStorage.removeItem("rememberMe");
+      } catch (error) {
+        console.error("Error clearing credentials:", error);
+      }
+    }
+  };
+
+  // Load saved credentials on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      const savedEmail = localStorage.getItem("rememberedEmail");
+      const savedPassword = localStorage.getItem("rememberedPassword");
+      const savedRememberMe = localStorage.getItem("rememberMe");
+
+      console.log("Loading saved credentials:", {
+        savedEmail,
+        savedPassword: savedPassword ? "***" : null,
+        savedRememberMe
+      });
+
+      if (savedRememberMe === "true" && savedEmail && savedPassword) {
+        setEmail(savedEmail);
+        setPassword(savedPassword);
+        setRememberMe(true);
+      }
+    } catch (error) {
+      console.error("Error loading saved credentials:", error);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -79,9 +122,28 @@ export default function Login() {
         return;
       }
 
-      setEmail("");
-      setPassword("");
+      // Handle Remember Me
+      if (rememberMe) {
+        try {
+          console.log("Saving credentials to localStorage");
+          localStorage.setItem("rememberedEmail", email);
+          localStorage.setItem("rememberedPassword", password);
+          localStorage.setItem("rememberMe", "true");
+        } catch (error) {
+          console.error("Error saving credentials:", error);
+        }
+      } else {
+        try {
+          console.log("Removing credentials from localStorage");
+          localStorage.removeItem("rememberedEmail");
+          localStorage.removeItem("rememberedPassword");
+          localStorage.removeItem("rememberMe");
+        } catch (error) {
+          console.error("Error removing credentials:", error);
+        }
+      }
 
+      // Don't clear the fields yet - let redirect happen first
       const adminRedirect = await handleAdminSignIn();
       if (adminRedirect) {
         router.push(adminRedirect);
@@ -170,6 +232,22 @@ export default function Login() {
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => handleRememberMeChange(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-[#003862] focus:ring-[#003862]"
+              />
+              <label
+                htmlFor="rememberMe"
+                className="ml-2 text-sm text-slate-700 cursor-pointer select-none"
+              >
+                Remember me
+              </label>
             </div>
 
             <button

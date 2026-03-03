@@ -14,7 +14,7 @@ model User {
   role          String    @default("driver")
   // driver | sponsor | admin
 
-  status        String    @default("active")
+  // status        String    @default("active")
   // active | disabled (primarily for admins)
 
   emailVerified Boolean   @default(false)
