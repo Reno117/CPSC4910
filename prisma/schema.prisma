@@ -14,6 +14,9 @@ model User {
   role          String    @default("driver")
   // driver | sponsor | admin
 
+  status        String    @default("active")
+  // active | disabled (primarily for admins)
+
   emailVerified Boolean   @default(false)
   image         String?   @db.Text
   createdAt     DateTime  @default(now())
