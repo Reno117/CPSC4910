@@ -7,7 +7,8 @@ import { revalidatePath } from "next/cache";
 export async function addPoints(
   driverProfileId: string,
   amount: number,
-  reason: string
+  reason: string,
+  sponsorIdParam?: string
 ) {
   const { user, isAdmin, sponsorId } = await requireSponsorOrAdmin();
 
@@ -15,29 +16,44 @@ export async function addPoints(
   const driverProfile = await prisma.driverProfile.findUnique({
     where: { id: driverProfileId },
   });
-
+console.log("sponsorIdParam:", sponsorIdParam);
+console.log("sponsorId from auth:", sponsorId);
   if (!driverProfile) {
     throw new Error("Driver not found");
   }
-
-  // Sponsors can only manage their own drivers, admins can manage any
-  if (!isAdmin && driverProfile.sponsorId !== sponsorId) {
-    throw new Error("Unauthorized: Driver not in your organization");
-  }
-
   // Use the driver's actual sponsorId for the point change record
-  const actualSponsorId = driverProfile.sponsorId;
+  const actualSponsorId = sponsorIdParam ?? sponsorId;
   
   if (!actualSponsorId) {
     throw new Error("Driver is not associated with a sponsor");
+  };
+
+   // Verify the driver is actually sponsored by this sponsor via bridge table
+  if (!isAdmin) {
+    const sponsorship = await prisma.sponsoredBy.findUnique({
+      where: {
+        driverId_sponsorOrgId: {
+          driverId: driverProfileId,
+          sponsorOrgId: actualSponsorId,
+        },
+      },
+    });
+    if (!sponsorship) {
+      throw new Error("Unauthorized: Driver not in your organization");
+    }
   }
 
   // Update points in transaction
   await prisma.$transaction([
-    prisma.driverProfile.update({
-      where: { id: driverProfileId },
+    prisma.sponsoredBy.update({
+      where: { 
+        driverId_sponsorOrgId: {
+          driverId: driverProfileId,
+          sponsorOrgId: actualSponsorId, 
+        },
+      },
       data: {
-        pointsBalance: {
+        points: {
           increment: amount,
         },
       },

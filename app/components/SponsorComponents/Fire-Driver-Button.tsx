@@ -5,11 +5,12 @@ import { fireDriver } from "@/app/actions/sponsor/fire-driver";
 interface FireDriverProps {
   driver: {
     id: string;
-    sponsorId: string | null;
-    status: string;
-    pointsBalance: number;
-    user: {
-      name: string;
+    sponsorOrgId: string | null;
+    points: number;
+    driver: {
+      user: {
+        name: string;
+      };
     };
   };
 }

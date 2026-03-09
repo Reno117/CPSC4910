@@ -10,6 +10,8 @@ export default async function DriverDashboard() {
 
   let pointsBalance = 0;
   let pointHistory: any[] = [];
+  let sponsorships: any[] = [];
+
 
   try {
     if (session?.user?.id) {
@@ -33,6 +35,13 @@ export default async function DriverDashboard() {
 
       // Get point transaction history
       if (driverProfile) {
+        sponsorships = await prisma.sponsoredBy.findMany({
+          where: { driverId: driverProfile.id },
+          include: {
+            sponsorOrg: true,
+          },
+        });
+                
         pointHistory = await prisma.pointChange.findMany({
           where: {
             driverProfileId: driverProfile.id,
@@ -70,9 +79,20 @@ export default async function DriverDashboard() {
           {/* Left Box - Points */}
           <div className="w-1/2 p-10 bg-white rounded-lg border border-gray-200 shadow-sm">
             <h2 className="text-3xl font-semibold text-gray-800 mb-6">Driver Stats:</h2>
-            <div className="text-5xl font-bold text-blue-600">
-              {pointsBalance.toLocaleString()} points
-            </div>
+            {sponsorships.length === 0 ? (
+              <p className="text-gray-500">No active sponsorships</p>
+            ) : (
+              <div className="space-y-4">
+                {sponsorships.map((s) => (
+                  <div key={s.id} className="border border-gray-100 rounded-lg p-4">
+                    <p className="text-sm font-medium text-gray-500 mb-1">{s.sponsorOrg.name}</p>
+                    <div className="text-4xl font-bold text-blue-600">
+                      {s.points.toLocaleString()} points
+                  </div>
+                </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right Box - Point Transactions */}

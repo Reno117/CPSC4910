@@ -47,23 +47,24 @@ export default async function SponsorDashboard() {
         })
       : [];
 
-  const drivers = await prisma.driverProfile.findMany({
+  const drivers = await prisma.sponsoredBy.findMany({
     where: isAdmin
-      ? { status: "active" }
-      : { sponsorId: sponsorId!, status: "active" },
+      ? {}
+      : { sponsorOrgId: sponsorId!},
     select: {
       id: true,
-      pointsBalance: true,
-      sponsorId: true,
+      points: true,
+      sponsorOrgId: true,
       createdAt: true,
-      status: true,
-      user: {
+      driver: {
         select: {
-          name: true,
-          email: true,
+          id: true,
+          status: true,
+          pointsBalance: true,
+          user: {select: {name: true, email: true, image: true } },
         },
       },
-      sponsor: {
+      sponsorOrg: {
         select: {
           name: true,
         },

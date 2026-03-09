@@ -38,7 +38,7 @@ export default function PointsButton({
     setLoading(true);
 
     try {
-      await addPoints(driverProfileId, pointAmount, reason);
+      await addPoints(driverProfileId, pointAmount, reason, sponsorId);
       setShowModal(false);
       setAmount("");
       setReason("");

@@ -6,15 +6,19 @@ import { updateDriverProfile } from '@/app/actions/sponsor/edit-driver-as-sponso
 import FireDriverButton from './Fire-Driver-Button';
 type Driver = {
   id: string;
-  pointsBalance: number;
-  sponsorId: string | null;
-  status: string
-  user: {
-    name: string;
-    email: string;
-    image?: string | null;
-  };
-  sponsor?: {
+  points: number;
+  sponsorOrgId: string
+  driver: {
+    id: string;
+    status: string;
+    pointsBalance: number;
+    user: {
+      name: string;
+      email: string;
+      image: string | null;
+      };
+    };
+  sponsorOrg?: {
     name: string;
   } | null;
   createdAt: Date;
@@ -45,8 +49,8 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
   const filteredDrivers = useMemo(() => {
     if (!normalizedQuery) return drivers;
     return drivers.filter((driver) => {
-      const name = driver.user.name.toLowerCase();
-      const email = driver.user.email.toLowerCase();
+      const name = driver.driver.user.name.toLowerCase();
+      const email = driver.driver.user.email.toLowerCase();
       return name.includes(normalizedQuery) || email.includes(normalizedQuery);
     });
   }, [drivers, normalizedQuery]);
@@ -58,7 +62,7 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
   const handleContextMenu = (e: React.MouseEvent, driver: Driver) => {
     e.preventDefault();
     setSelectedDriver(driver);
-    setEditedData({ user: { ...driver.user } });
+    setEditedData({ driver: { ...driver.driver } });
     setIsEditMode(false);
     setIsSaving(false);
     setPreviewImage(null);
@@ -80,7 +84,7 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
 
   const handleCancelEdit = () => {
     if (selectedDriver) {
-      setEditedData({ user: { ...selectedDriver.user } });
+      setEditedData({ driver: { ...selectedDriver.driver } });
     }
     setPreviewImage(null);
     setNewImageBase64(null);
@@ -108,8 +112,8 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
     setIsSaving(true);
     try {
       await updateDriverProfile(selectedDriver.id, {
-        name: editedData.user?.name,
-        email: editedData.user?.email,
+        name: editedData.driver?.user.name,
+        email: editedData.driver?.user.email,
         ...(newImageBase64 && { image: newImageBase64 }),
       });
       setIsSaving(false);
@@ -132,7 +136,7 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
     }
   }, [contextMenu]);
 
-  const displayImage = previewImage ?? selectedDriver?.user.image ?? null;
+  const displayImage = previewImage ?? selectedDriver?.driver.user.image ?? null;
 
   return (
     <>
@@ -175,23 +179,23 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
                   onContextMenu={(e) => handleContextMenu(e, driver)}
                   style={{ fontSize: '16px', fontWeight: '500', color: '#333', cursor: 'context-menu', display: 'inline-block' }}
                 >
-                  {driver.user.name}
+                  {driver.driver.user.name}
                 </div>
-                {isAdmin && driver.sponsor && (
+                {isAdmin && driver.sponsorOrg && (
                   <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
-                    ({driver.sponsor.name})
+                    ({driver.sponsorOrg.name})
                   </span>
                 )}
                 <div style={{ fontSize: '14px', color: '#28a745', fontWeight: '600', marginLeft: '20px', marginTop: '5px' }}>
-                  {driver.pointsBalance} points
+                  {driver.points} points
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              {driver.sponsorId && (
+              {driver.sponsorOrgId && (
                 <PointsButton
-                  driverProfileId={driver.id}
-                  driverName={driver.user.name}
-                  sponsorId={driver.sponsorId}
+                  driverProfileId={driver.driver.id}
+                  driverName={driver.driver.user.name}
+                  sponsorId={driver.sponsorOrgId}
 
                 />
               )}
@@ -279,7 +283,7 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
                     color: 'white', fontSize: '32px', fontWeight: 'bold',
                     border: '3px solid #0056b3'
                   }}>
-                    {selectedDriver.user.name.charAt(0).toUpperCase()}
+                    {selectedDriver.driver.user.name.charAt(0).toUpperCase()}
                   </div>
                 )}
                 {isEditMode && (
@@ -310,26 +314,26 @@ export default function DriverListClient({ drivers, isAdmin, initialCount }: Dri
             <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {!isEditMode ? (
                 <>
-                  <ProfileItem label="Name" value={selectedDriver.user.name} />
-                  <ProfileItem label="Email" value={selectedDriver.user.email} />
-                  <ProfileItem label="Status" value={selectedDriver.status} />
-                  {selectedDriver.sponsor && <ProfileItem label="Sponsor" value={selectedDriver.sponsor.name} />}
+                  <ProfileItem label="Name" value={selectedDriver.driver.user.name} />
+                  <ProfileItem label="Email" value={selectedDriver.driver.user.email} />
+                  <ProfileItem label="Status" value={selectedDriver.driver.status} />
+                  {selectedDriver.sponsorOrg && <ProfileItem label="Sponsor" value={selectedDriver.sponsorOrg.name} />}
                   <ProfileItem label="Member Since" value={new Date(selectedDriver.createdAt).toLocaleDateString()} />
                 </>
               ) : (
                 <>
                   <EditField
                     label="Name"
-                    value={editedData.user?.name || ''}
-                    onChange={(value) => setEditedData(prev => ({ ...prev, user: { ...prev.user!, name: value } }))}
+                    value={editedData.driver?.user?.name || ''}
+                    onChange={(value) => setEditedData(prev => ({ ...prev, user: { ...prev.driver!.user!, name: value } }))}
                   />
                   <EditField
                     label="Email"
                     type="email"
-                    value={editedData.user?.email || ''}
-                    onChange={(value) => setEditedData(prev => ({ ...prev, user: { ...prev.user!, email: value } }))}
+                    value={editedData.driver?.user?.email || ''}
+                    onChange={(value) => setEditedData(prev => ({ ...prev, user: { ...prev.driver!.user!, email: value } }))}
                   />
-                  {selectedDriver.sponsor && <ProfileItem label="Sponsor" value={selectedDriver.sponsor.name} />}
+                  {selectedDriver.sponsorOrg && <ProfileItem label="Sponsor" value={selectedDriver.sponsorOrg.name} />}
                   <ProfileItem label="Member Since" value={new Date(selectedDriver.createdAt).toLocaleDateString()} />
                 </>
               )}
