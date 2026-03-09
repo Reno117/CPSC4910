@@ -41,9 +41,22 @@ export default async function DriverCatalogPage({ searchParams }: { searchParams
     products = catalog.products;
     pointValue = catalog.pointValue;
     sponsorName = catalog.sponsorName;
-    currentBalance = driverProfile.pointsBalance;
     driverProfileId = driverProfile.id;
     isViewingAsDriver = true;
+    
+
+    if (catalog.activeSponsorId) {
+    const sponsorship = await prisma.sponsoredBy.findUnique({
+      where: {
+        driverId_sponsorOrgId: {
+          driverId: driverProfile.id,
+          sponsorOrgId: catalog.activeSponsorId,
+        },
+      },
+    });
+    currentBalance = sponsorship?.points ?? 0;
+  }
+
   }
 
   else if (user.role === "sponsor") {

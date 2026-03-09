@@ -37,6 +37,8 @@ export async function getDriverCatalog(driverProfileId: string, sponsorIdOverrid
     products,
     pointValue: activeSponsor.pointValue,
     sponsorName: activeSponsor.name,
+    activeSponsorId: activeSponsor.id,
+    
   };
 }
 
