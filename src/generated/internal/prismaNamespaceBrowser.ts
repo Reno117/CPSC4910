@@ -51,7 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  rule: 'rule',
+  Rule: 'Rule',
   User: 'User',
   DriverProfile: 'DriverProfile',
   Sponsor: 'Sponsor',
@@ -323,12 +323,12 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const ruleOrderByRelevanceFieldEnum = {
+export const RuleOrderByRelevanceFieldEnum = {
   title: 'title',
   content: 'content'
 } as const
 
-export type ruleOrderByRelevanceFieldEnum = (typeof ruleOrderByRelevanceFieldEnum)[keyof typeof ruleOrderByRelevanceFieldEnum]
+export type RuleOrderByRelevanceFieldEnum = (typeof RuleOrderByRelevanceFieldEnum)[keyof typeof RuleOrderByRelevanceFieldEnum]
 
 
 export const NullsOrder = {

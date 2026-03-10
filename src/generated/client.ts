@@ -40,10 +40,12 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model rule
+
+ * Model Rule
  * 
  */
-export type rule = Prisma.ruleModel
+export type Rule = Prisma.RuleModel
+
 /**
  * Model User
  * 

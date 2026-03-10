@@ -4,7 +4,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck 
 /*
- * This file exports the `rule` model and its related types.
+ * This file exports the `Rule` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -13,10 +13,10 @@ import type * as $Enums from "../enums"
 import type * as Prisma from "../internal/prismaNamespace"
 
 /**
- * Model rule
+ * Model Rule
  * 
  */
-export type ruleModel = runtime.Types.Result.DefaultSelection<Prisma.$rulePayload>
+export type RuleModel = runtime.Types.Result.DefaultSelection<Prisma.$RulePayload>
 
 export type AggregateRule = {
   _count: RuleCountAggregateOutputType | null
@@ -83,37 +83,37 @@ export type RuleCountAggregateInputType = {
 
 export type RuleAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which rule to aggregate.
+   * Filter which Rule to aggregate.
    */
-  where?: Prisma.ruleWhereInput
+  where?: Prisma.RuleWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of rules to fetch.
+   * Determine the order of Rules to fetch.
    */
-  orderBy?: Prisma.ruleOrderByWithRelationInput | Prisma.ruleOrderByWithRelationInput[]
+  orderBy?: Prisma.RuleOrderByWithRelationInput | Prisma.RuleOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.ruleWhereUniqueInput
+  cursor?: Prisma.RuleWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` rules from the position of the cursor.
+   * Take `±n` Rules from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` rules.
+   * Skip the first `n` Rules.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned rules
+   * Count returned Rules
   **/
   _count?: true | RuleCountAggregateInputType
   /**
@@ -153,11 +153,11 @@ export type GetRuleAggregateType<T extends RuleAggregateArgs> = {
 
 
 
-export type ruleGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ruleWhereInput
-  orderBy?: Prisma.ruleOrderByWithAggregationInput | Prisma.ruleOrderByWithAggregationInput[]
+export type RuleGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RuleWhereInput
+  orderBy?: Prisma.RuleOrderByWithAggregationInput | Prisma.RuleOrderByWithAggregationInput[]
   by: Prisma.RuleScalarFieldEnum[] | Prisma.RuleScalarFieldEnum
-  having?: Prisma.ruleScalarWhereWithAggregatesInput
+  having?: Prisma.RuleScalarWhereWithAggregatesInput
   take?: number
   skip?: number
   _count?: RuleCountAggregateInputType | true
@@ -178,7 +178,7 @@ export type RuleGroupByOutputType = {
   _max: RuleMaxAggregateOutputType | null
 }
 
-type GetRuleGroupByPayload<T extends ruleGroupByArgs> = Prisma.PrismaPromise<
+type GetRuleGroupByPayload<T extends RuleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RuleGroupByOutputType, T['by']> &
       {
@@ -193,119 +193,119 @@ type GetRuleGroupByPayload<T extends ruleGroupByArgs> = Prisma.PrismaPromise<
 
 
 
-export type ruleWhereInput = {
-  AND?: Prisma.ruleWhereInput | Prisma.ruleWhereInput[]
-  OR?: Prisma.ruleWhereInput[]
-  NOT?: Prisma.ruleWhereInput | Prisma.ruleWhereInput[]
-  id?: Prisma.IntFilter<"rule"> | number
-  title?: Prisma.StringFilter<"rule"> | string
-  content?: Prisma.StringFilter<"rule"> | string
+export type RuleWhereInput = {
+  AND?: Prisma.RuleWhereInput | Prisma.RuleWhereInput[]
+  OR?: Prisma.RuleWhereInput[]
+  NOT?: Prisma.RuleWhereInput | Prisma.RuleWhereInput[]
+  id?: Prisma.IntFilter<"Rule"> | number
+  title?: Prisma.StringFilter<"Rule"> | string
+  content?: Prisma.StringFilter<"Rule"> | string
 }
 
-export type ruleOrderByWithRelationInput = {
+export type RuleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  _relevance?: Prisma.ruleOrderByRelevanceInput
+  _relevance?: Prisma.RuleOrderByRelevanceInput
 }
 
-export type ruleWhereUniqueInput = Prisma.AtLeast<{
+export type RuleWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  AND?: Prisma.ruleWhereInput | Prisma.ruleWhereInput[]
-  OR?: Prisma.ruleWhereInput[]
-  NOT?: Prisma.ruleWhereInput | Prisma.ruleWhereInput[]
-  title?: Prisma.StringFilter<"rule"> | string
-  content?: Prisma.StringFilter<"rule"> | string
+  AND?: Prisma.RuleWhereInput | Prisma.RuleWhereInput[]
+  OR?: Prisma.RuleWhereInput[]
+  NOT?: Prisma.RuleWhereInput | Prisma.RuleWhereInput[]
+  title?: Prisma.StringFilter<"Rule"> | string
+  content?: Prisma.StringFilter<"Rule"> | string
 }, "id">
 
-export type ruleOrderByWithAggregationInput = {
+export type RuleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  _count?: Prisma.ruleCountOrderByAggregateInput
-  _avg?: Prisma.ruleAvgOrderByAggregateInput
-  _max?: Prisma.ruleMaxOrderByAggregateInput
-  _min?: Prisma.ruleMinOrderByAggregateInput
-  _sum?: Prisma.ruleSumOrderByAggregateInput
+  _count?: Prisma.RuleCountOrderByAggregateInput
+  _avg?: Prisma.RuleAvgOrderByAggregateInput
+  _max?: Prisma.RuleMaxOrderByAggregateInput
+  _min?: Prisma.RuleMinOrderByAggregateInput
+  _sum?: Prisma.RuleSumOrderByAggregateInput
 }
 
-export type ruleScalarWhereWithAggregatesInput = {
-  AND?: Prisma.ruleScalarWhereWithAggregatesInput | Prisma.ruleScalarWhereWithAggregatesInput[]
-  OR?: Prisma.ruleScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.ruleScalarWhereWithAggregatesInput | Prisma.ruleScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"rule"> | number
-  title?: Prisma.StringWithAggregatesFilter<"rule"> | string
-  content?: Prisma.StringWithAggregatesFilter<"rule"> | string
+export type RuleScalarWhereWithAggregatesInput = {
+  AND?: Prisma.RuleScalarWhereWithAggregatesInput | Prisma.RuleScalarWhereWithAggregatesInput[]
+  OR?: Prisma.RuleScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.RuleScalarWhereWithAggregatesInput | Prisma.RuleScalarWhereWithAggregatesInput[]
+  id?: Prisma.IntWithAggregatesFilter<"Rule"> | number
+  title?: Prisma.StringWithAggregatesFilter<"Rule"> | string
+  content?: Prisma.StringWithAggregatesFilter<"Rule"> | string
 }
 
-export type ruleCreateInput = {
+export type RuleCreateInput = {
   title: string
   content: string
 }
 
-export type ruleUncheckedCreateInput = {
+export type RuleUncheckedCreateInput = {
   id?: number
   title: string
   content: string
 }
 
-export type ruleUpdateInput = {
+export type RuleUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type ruleUncheckedUpdateInput = {
+export type RuleUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type ruleCreateManyInput = {
+export type RuleCreateManyInput = {
   id?: number
   title: string
   content: string
 }
 
-export type ruleUpdateManyMutationInput = {
+export type RuleUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type ruleUncheckedUpdateManyInput = {
+export type RuleUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type ruleOrderByRelevanceInput = {
-  fields: Prisma.ruleOrderByRelevanceFieldEnum | Prisma.ruleOrderByRelevanceFieldEnum[]
+export type RuleOrderByRelevanceInput = {
+  fields: Prisma.RuleOrderByRelevanceFieldEnum | Prisma.RuleOrderByRelevanceFieldEnum[]
   sort: Prisma.SortOrder
   search: string
 }
 
-export type ruleCountOrderByAggregateInput = {
+export type RuleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
 }
 
-export type ruleAvgOrderByAggregateInput = {
+export type RuleAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
-export type ruleMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  content?: Prisma.SortOrder
-}
-
-export type ruleMinOrderByAggregateInput = {
+export type RuleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
 }
 
-export type ruleSumOrderByAggregateInput = {
+export type RuleMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+}
+
+export type RuleSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
@@ -323,7 +323,7 @@ export type IntFieldUpdateOperationsInput = {
 
 
 
-export type ruleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type RuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   content?: boolean
@@ -331,16 +331,16 @@ export type ruleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 
 
 
-export type ruleSelectScalar = {
+export type RuleSelectScalar = {
   id?: boolean
   title?: boolean
   content?: boolean
 }
 
-export type ruleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "content", ExtArgs["result"]["rule"]>
+export type RuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "content", ExtArgs["result"]["rule"]>
 
-export type $rulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  name: "rule"
+export type $RulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "Rule"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -350,18 +350,18 @@ export type $rulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   composites: {}
 }
 
-export type ruleGetPayload<S extends boolean | null | undefined | ruleDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$rulePayload, S>
+export type RuleGetPayload<S extends boolean | null | undefined | RuleDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$RulePayload, S>
 
-export type ruleCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ruleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+export type RuleCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<RuleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
     select?: RuleCountAggregateInputType | true
   }
 
-export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['rule'], meta: { name: 'rule' } }
+export interface RuleDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Rule'], meta: { name: 'Rule' } }
   /**
    * Find zero or one Rule that matches the filter.
-   * @param {ruleFindUniqueArgs} args - Arguments to find a Rule
+   * @param {RuleFindUniqueArgs} args - Arguments to find a Rule
    * @example
    * // Get one Rule
    * const rule = await prisma.rule.findUnique({
@@ -370,12 +370,12 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findUnique<T extends ruleFindUniqueArgs>(args: Prisma.SelectSubset<T, ruleFindUniqueArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findUnique<T extends RuleFindUniqueArgs>(args: Prisma.SelectSubset<T, RuleFindUniqueArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one Rule that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {ruleFindUniqueOrThrowArgs} args - Arguments to find a Rule
+   * @param {RuleFindUniqueOrThrowArgs} args - Arguments to find a Rule
    * @example
    * // Get one Rule
    * const rule = await prisma.rule.findUniqueOrThrow({
@@ -384,13 +384,13 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findUniqueOrThrow<T extends ruleFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, ruleFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findUniqueOrThrow<T extends RuleFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, RuleFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Rule that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {ruleFindFirstArgs} args - Arguments to find a Rule
+   * @param {RuleFindFirstArgs} args - Arguments to find a Rule
    * @example
    * // Get one Rule
    * const rule = await prisma.rule.findFirst({
@@ -399,14 +399,14 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findFirst<T extends ruleFindFirstArgs>(args?: Prisma.SelectSubset<T, ruleFindFirstArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findFirst<T extends RuleFindFirstArgs>(args?: Prisma.SelectSubset<T, RuleFindFirstArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Rule that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {ruleFindFirstOrThrowArgs} args - Arguments to find a Rule
+   * @param {RuleFindFirstOrThrowArgs} args - Arguments to find a Rule
    * @example
    * // Get one Rule
    * const rule = await prisma.rule.findFirstOrThrow({
@@ -415,13 +415,13 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  findFirstOrThrow<T extends ruleFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, ruleFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findFirstOrThrow<T extends RuleFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, RuleFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more Rules that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {ruleFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {RuleFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
    * // Get all Rules
    * const rules = await prisma.rule.findMany()
@@ -433,11 +433,11 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * const ruleWithIdOnly = await prisma.rule.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends ruleFindManyArgs>(args?: Prisma.SelectSubset<T, ruleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+  findMany<T extends RuleFindManyArgs>(args?: Prisma.SelectSubset<T, RuleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a Rule.
-   * @param {ruleCreateArgs} args - Arguments to create a Rule.
+   * @param {RuleCreateArgs} args - Arguments to create a Rule.
    * @example
    * // Create one Rule
    * const Rule = await prisma.rule.create({
@@ -447,11 +447,11 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  create<T extends ruleCreateArgs>(args: Prisma.SelectSubset<T, ruleCreateArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  create<T extends RuleCreateArgs>(args: Prisma.SelectSubset<T, RuleCreateArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many Rules.
-   * @param {ruleCreateManyArgs} args - Arguments to create many Rules.
+   * @param {RuleCreateManyArgs} args - Arguments to create many Rules.
    * @example
    * // Create many Rules
    * const rule = await prisma.rule.createMany({
@@ -461,11 +461,11 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    *     
    */
-  createMany<T extends ruleCreateManyArgs>(args?: Prisma.SelectSubset<T, ruleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  createMany<T extends RuleCreateManyArgs>(args?: Prisma.SelectSubset<T, RuleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Delete a Rule.
-   * @param {ruleDeleteArgs} args - Arguments to delete one Rule.
+   * @param {RuleDeleteArgs} args - Arguments to delete one Rule.
    * @example
    * // Delete one Rule
    * const Rule = await prisma.rule.delete({
@@ -475,11 +475,11 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  delete<T extends ruleDeleteArgs>(args: Prisma.SelectSubset<T, ruleDeleteArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  delete<T extends RuleDeleteArgs>(args: Prisma.SelectSubset<T, RuleDeleteArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one Rule.
-   * @param {ruleUpdateArgs} args - Arguments to update one Rule.
+   * @param {RuleUpdateArgs} args - Arguments to update one Rule.
    * @example
    * // Update one Rule
    * const rule = await prisma.rule.update({
@@ -492,11 +492,11 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  update<T extends ruleUpdateArgs>(args: Prisma.SelectSubset<T, ruleUpdateArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  update<T extends RuleUpdateArgs>(args: Prisma.SelectSubset<T, RuleUpdateArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more Rules.
-   * @param {ruleDeleteManyArgs} args - Arguments to filter Rules to delete.
+   * @param {RuleDeleteManyArgs} args - Arguments to filter Rules to delete.
    * @example
    * // Delete a few Rules
    * const { count } = await prisma.rule.deleteMany({
@@ -506,13 +506,13 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  deleteMany<T extends ruleDeleteManyArgs>(args?: Prisma.SelectSubset<T, ruleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  deleteMany<T extends RuleDeleteManyArgs>(args?: Prisma.SelectSubset<T, RuleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more Rules.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {ruleUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {RuleUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
    * // Update many Rules
    * const rule = await prisma.rule.updateMany({
@@ -525,11 +525,11 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    * 
    */
-  updateMany<T extends ruleUpdateManyArgs>(args: Prisma.SelectSubset<T, ruleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  updateMany<T extends RuleUpdateManyArgs>(args: Prisma.SelectSubset<T, RuleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create or update one Rule.
-   * @param {ruleUpsertArgs} args - Arguments to update or create a Rule.
+   * @param {RuleUpsertArgs} args - Arguments to update or create a Rule.
    * @example
    * // Update or create a Rule
    * const rule = await prisma.rule.upsert({
@@ -544,14 +544,14 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
    */
-  upsert<T extends ruleUpsertArgs>(args: Prisma.SelectSubset<T, ruleUpsertArgs<ExtArgs>>): Prisma.Prisma__ruleClient<runtime.Types.Result.GetResult<Prisma.$rulePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  upsert<T extends RuleUpsertArgs>(args: Prisma.SelectSubset<T, RuleUpsertArgs<ExtArgs>>): Prisma.Prisma__RuleClient<runtime.Types.Result.GetResult<Prisma.$RulePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
    * Count the number of Rules.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {ruleCountArgs} args - Arguments to filter Rules to count.
+   * @param {RuleCountArgs} args - Arguments to filter Rules to count.
    * @example
    * // Count the number of Rules
    * const count = await prisma.rule.count({
@@ -560,8 +560,8 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   }
    * })
   **/
-  count<T extends ruleCountArgs>(
-    args?: Prisma.Subset<T, ruleCountArgs>,
+  count<T extends RuleCountArgs>(
+    args?: Prisma.Subset<T, RuleCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
@@ -600,7 +600,7 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * Group by Rule.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {ruleGroupByArgs} args - Group by arguments.
+   * @param {RuleGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -615,14 +615,14 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * 
   **/
   groupBy<
-    T extends ruleGroupByArgs,
+    T extends RuleGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: ruleGroupByArgs['orderBy'] }
-      : { orderBy?: ruleGroupByArgs['orderBy'] },
+      ? { orderBy: RuleGroupByArgs['orderBy'] }
+      : { orderBy?: RuleGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -671,20 +671,20 @@ export interface ruleDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
           ? never
           : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
       }[OrderFields]
-  >(args: Prisma.SubsetIntersection<T, ruleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRuleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  >(args: Prisma.SubsetIntersection<T, RuleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRuleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 /**
- * Fields of the rule model
+ * Fields of the Rule model
  */
-readonly fields: ruleFieldRefs;
+readonly fields: RuleFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for rule.
+ * The delegate class that acts as a "Promise-like" for Rule.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__ruleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+export interface Prisma__RuleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -712,328 +712,328 @@ export interface Prisma__ruleClient<T, Null = never, ExtArgs extends runtime.Typ
 
 
 /**
- * Fields of the rule model
+ * Fields of the Rule model
  */
-export interface ruleFieldRefs {
-  readonly id: Prisma.FieldRef<"rule", 'Int'>
-  readonly title: Prisma.FieldRef<"rule", 'String'>
-  readonly content: Prisma.FieldRef<"rule", 'String'>
+export interface RuleFieldRefs {
+  readonly id: Prisma.FieldRef<"Rule", 'Int'>
+  readonly title: Prisma.FieldRef<"Rule", 'String'>
+  readonly content: Prisma.FieldRef<"Rule", 'String'>
 }
     
 
 // Custom InputTypes
 /**
- * rule findUnique
+ * Rule findUnique
  */
-export type ruleFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * Filter, which rule to fetch.
+   * Filter, which Rule to fetch.
    */
-  where: Prisma.ruleWhereUniqueInput
+  where: Prisma.RuleWhereUniqueInput
 }
 
 /**
- * rule findUniqueOrThrow
+ * Rule findUniqueOrThrow
  */
-export type ruleFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * Filter, which rule to fetch.
+   * Filter, which Rule to fetch.
    */
-  where: Prisma.ruleWhereUniqueInput
+  where: Prisma.RuleWhereUniqueInput
 }
 
 /**
- * rule findFirst
+ * Rule findFirst
  */
-export type ruleFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * Filter, which rule to fetch.
+   * Filter, which Rule to fetch.
    */
-  where?: Prisma.ruleWhereInput
+  where?: Prisma.RuleWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of rules to fetch.
+   * Determine the order of Rules to fetch.
    */
-  orderBy?: Prisma.ruleOrderByWithRelationInput | Prisma.ruleOrderByWithRelationInput[]
+  orderBy?: Prisma.RuleOrderByWithRelationInput | Prisma.RuleOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for rules.
+   * Sets the position for searching for Rules.
    */
-  cursor?: Prisma.ruleWhereUniqueInput
+  cursor?: Prisma.RuleWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` rules from the position of the cursor.
+   * Take `±n` Rules from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` rules.
+   * Skip the first `n` Rules.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of rules.
+   * Filter by unique combinations of Rules.
    */
   distinct?: Prisma.RuleScalarFieldEnum | Prisma.RuleScalarFieldEnum[]
 }
 
 /**
- * rule findFirstOrThrow
+ * Rule findFirstOrThrow
  */
-export type ruleFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * Filter, which rule to fetch.
+   * Filter, which Rule to fetch.
    */
-  where?: Prisma.ruleWhereInput
+  where?: Prisma.RuleWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of rules to fetch.
+   * Determine the order of Rules to fetch.
    */
-  orderBy?: Prisma.ruleOrderByWithRelationInput | Prisma.ruleOrderByWithRelationInput[]
+  orderBy?: Prisma.RuleOrderByWithRelationInput | Prisma.RuleOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for rules.
+   * Sets the position for searching for Rules.
    */
-  cursor?: Prisma.ruleWhereUniqueInput
+  cursor?: Prisma.RuleWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` rules from the position of the cursor.
+   * Take `±n` Rules from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` rules.
+   * Skip the first `n` Rules.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of rules.
+   * Filter by unique combinations of Rules.
    */
   distinct?: Prisma.RuleScalarFieldEnum | Prisma.RuleScalarFieldEnum[]
 }
 
 /**
- * rule findMany
+ * Rule findMany
  */
-export type ruleFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * Filter, which rules to fetch.
+   * Filter, which Rules to fetch.
    */
-  where?: Prisma.ruleWhereInput
+  where?: Prisma.RuleWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of rules to fetch.
+   * Determine the order of Rules to fetch.
    */
-  orderBy?: Prisma.ruleOrderByWithRelationInput | Prisma.ruleOrderByWithRelationInput[]
+  orderBy?: Prisma.RuleOrderByWithRelationInput | Prisma.RuleOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing rules.
+   * Sets the position for listing Rules.
    */
-  cursor?: Prisma.ruleWhereUniqueInput
+  cursor?: Prisma.RuleWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` rules from the position of the cursor.
+   * Take `±n` Rules from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` rules.
+   * Skip the first `n` Rules.
    */
   skip?: number
   distinct?: Prisma.RuleScalarFieldEnum | Prisma.RuleScalarFieldEnum[]
 }
 
 /**
- * rule create
+ * Rule create
  */
-export type ruleCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * The data needed to create a rule.
+   * The data needed to create a Rule.
    */
-  data: Prisma.XOR<Prisma.ruleCreateInput, Prisma.ruleUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.RuleCreateInput, Prisma.RuleUncheckedCreateInput>
 }
 
 /**
- * rule createMany
+ * Rule createMany
  */
-export type ruleCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many rules.
+   * The data used to create many Rules.
    */
-  data: Prisma.ruleCreateManyInput | Prisma.ruleCreateManyInput[]
+  data: Prisma.RuleCreateManyInput | Prisma.RuleCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * rule update
+ * Rule update
  */
-export type ruleUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * The data needed to update a rule.
+   * The data needed to update a Rule.
    */
-  data: Prisma.XOR<Prisma.ruleUpdateInput, Prisma.ruleUncheckedUpdateInput>
+  data: Prisma.XOR<Prisma.RuleUpdateInput, Prisma.RuleUncheckedUpdateInput>
   /**
-   * Choose, which rule to update.
+   * Choose, which Rule to update.
    */
-  where: Prisma.ruleWhereUniqueInput
+  where: Prisma.RuleWhereUniqueInput
 }
 
 /**
- * rule updateMany
+ * Rule updateMany
  */
-export type ruleUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update rules.
+   * The data used to update Rules.
    */
-  data: Prisma.XOR<Prisma.ruleUpdateManyMutationInput, Prisma.ruleUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.RuleUpdateManyMutationInput, Prisma.RuleUncheckedUpdateManyInput>
   /**
-   * Filter which rules to update
+   * Filter which Rules to update
    */
-  where?: Prisma.ruleWhereInput
+  where?: Prisma.RuleWhereInput
   /**
-   * Limit how many rules to update.
+   * Limit how many Rules to update.
    */
   limit?: number
 }
 
 /**
- * rule upsert
+ * Rule upsert
  */
-export type ruleUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * The filter to search for the rule to update in case it exists.
+   * The filter to search for the Rule to update in case it exists.
    */
-  where: Prisma.ruleWhereUniqueInput
+  where: Prisma.RuleWhereUniqueInput
   /**
-   * In case the rule found by the `where` argument doesn't exist, create a new rule with this data.
+   * In case the Rule found by the `where` argument doesn't exist, create a new Rule with this data.
    */
-  create: Prisma.XOR<Prisma.ruleCreateInput, Prisma.ruleUncheckedCreateInput>
+  create: Prisma.XOR<Prisma.RuleCreateInput, Prisma.RuleUncheckedCreateInput>
   /**
-   * In case the rule was found with the provided `where` argument, update it with this data.
+   * In case the Rule was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<Prisma.ruleUpdateInput, Prisma.ruleUncheckedUpdateInput>
+  update: Prisma.XOR<Prisma.RuleUpdateInput, Prisma.RuleUncheckedUpdateInput>
 }
 
 /**
- * rule delete
+ * Rule delete
  */
-export type ruleDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
   /**
-   * Filter which rule to delete.
+   * Filter which Rule to delete.
    */
-  where: Prisma.ruleWhereUniqueInput
+  where: Prisma.RuleWhereUniqueInput
 }
 
 /**
- * rule deleteMany
+ * Rule deleteMany
  */
-export type ruleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which rules to delete
+   * Filter which Rules to delete
    */
-  where?: Prisma.ruleWhereInput
+  where?: Prisma.RuleWhereInput
   /**
-   * Limit how many rules to delete.
+   * Limit how many Rules to delete.
    */
   limit?: number
 }
 
 /**
- * rule without action
+ * Rule without action
  */
-export type ruleDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type RuleDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the rule
+   * Select specific fields to fetch from the Rule
    */
-  select?: Prisma.ruleSelect<ExtArgs> | null
+  select?: Prisma.RuleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the rule
+   * Omit specific fields from the Rule
    */
-  omit?: Prisma.ruleOmit<ExtArgs> | null
+  omit?: Prisma.RuleOmit<ExtArgs> | null
 }

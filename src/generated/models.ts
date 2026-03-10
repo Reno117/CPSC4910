@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/rule'
+export type * from './models/Rule'
 export type * from './models/User'
 export type * from './models/DriverProfile'
 export type * from './models/Sponsor'
