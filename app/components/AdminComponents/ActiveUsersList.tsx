@@ -19,6 +19,8 @@ type ActiveUser = {
   driverSponsorOrganization: string | null;
   sponsorUserId?: string | null; // Add this if not present
   sponsorUserStatus?: string | null; // Add this if not present
+  adminId?: string | null;
+  adminStatus?: string | null;
 };
 
 interface ActiveUsersListProps {
@@ -261,35 +263,34 @@ export default function ActiveUsersList({ users }: ActiveUsersListProps) {
                   )}
                 </>
               )}
-              {/*
               {selectedUser.role.toLowerCase() === 'admin' && (
                 <>
                   <p>
                     <span className="font-semibold text-gray-900">Admin ID:</span>{' '}
-                    {selectedUser.id ?? 'N/A'}
+                    {selectedUser.adminId ?? 'N/A'}
                   </p>
                   <p>
                     <span className="font-semibold text-gray-900">Status:</span>{' '}
                     <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
-                      selectedUser.sponsorUserStatus === 'active' ? 'bg-green-100 text-green-800' :
+                      selectedUser.adminId === 'active' ? 'bg-green-100 text-green-800' :
                       'bg-red-100 text-red-800'
                     }`}>
                       {formatStatus(selectedUser.sponsorUserStatus ?? null)}
                     </span>
                   </p>
 
-                   { NEW: Toggle Status Button for Admins }
-                  {selectedUser.id && (
+                   { /* NEW: Toggle Status Button for Admins */ }
+                  {selectedUser.adminId && (
                     <div className="pt-3">
                       <ToggleStatusButton
-                        profileId={selectedUser.id}
-                        /*currentStatus={selectedUser.sponsorUserStatus || 'active'} 
+                        profileId={selectedUser.adminId}
+                        currentStatus={selectedUser.adminStatus || 'active'} 
                         userType="admin" 
                       />
                     </div>
                   )}
                 </> 
-              )} */}
+              )}
             </div>
 
             <button
