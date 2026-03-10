@@ -7,7 +7,7 @@ datasource db {
   provider = "mysql"
 }
 
-model Rule {
+model rule {
   id          Int       @id @default(autoincrement())
   title       String
   content     String    @db.Text
