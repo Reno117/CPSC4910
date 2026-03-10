@@ -11,7 +11,7 @@ export async function getCartItemCount() {
     return 0;
   }
 
-  const cart = await prisma.cart.findUnique({
+  const carts = await prisma.cart.findMany({
     where: { driverProfileId: user.driverProfile.id },
     include: {
       items: {
@@ -22,11 +22,13 @@ export async function getCartItemCount() {
     },
   });
 
-  if (!cart) {
+  if (!carts) {
     return 0;
   }
 
-  return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  return carts.reduce(
+    (total, cart) => total + cart.items.reduce((sum, item) => sum + item.quantity, 0), 0
+  );
 }
 
 export async function addToCart(catalogProductId: string) {
@@ -43,8 +45,16 @@ export async function addToCart(catalogProductId: string) {
     throw new Error("Product not found");
   }
 
-  // Verify driver belongs to this sponsor
-  if (catalogProduct.sponsorId !== driverProfile.sponsorId) {
+  const sponsorship = await prisma.sponsoredBy.findUnique({
+    where: {
+      driverId_sponsorOrgId: {
+        driverId: driverProfile.id,
+        sponsorOrgId: catalogProduct.sponsorId,
+      },
+    },
+  });
+
+  if (!sponsorship) {
     throw new Error("This product is not available to you");
   }
 
@@ -56,14 +66,25 @@ export async function addToCart(catalogProductId: string) {
   const pointPrice = Math.ceil(catalogProduct.price / catalogProduct.sponsor.pointValue);
 
   // Get or create cart
-  let cart = await prisma.cart.findUnique({
-    where: { driverProfileId: driverProfile.id },
-  });
+  const existingCartRows = await prisma.$queryRaw<{ id: string }[]>`
+    SELECT id
+    FROM cart
+    WHERE driverProfileId = ${driverProfile.id}
+      AND sponsorId = ${catalogProduct.sponsorId}
+    LIMIT 1
+  `;
+
+  let cart = existingCartRows[0]
+    ? await prisma.cart.findUnique({
+        where: { id: existingCartRows[0].id },
+      })
+    : null;
 
   if (!cart) {
     cart = await prisma.cart.create({
       data: {
         driverProfileId: driverProfile.id,
+        sponsorId: catalogProduct.sponsorId,
       },
     });
   }
@@ -163,8 +184,9 @@ export async function clearCart() {
   const user = await requireDriver();
   const driverProfile = user.driverProfile!;
 
-  const cart = await prisma.cart.findUnique({
-    where: { driverProfileId: driverProfile.id },
+  const cart = await prisma.cart.findFirst({
+    where: { 
+      driverProfileId: driverProfile.id }
   });
 
   if (cart) {

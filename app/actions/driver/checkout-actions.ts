@@ -33,17 +33,105 @@ export async function checkout(deliveryInformation: DeliveryInformation) {
   const driverProfile = user.driverProfile!;
 
   // Get cart with items
-  const cart = await prisma.cart.findUnique({
-    where: { driverProfileId: driverProfile.id },
-    include: {
-      items: true,
+  const carts = await prisma.cart.findMany({
+    where: { 
+      driverProfileId: driverProfile.id,
+      items: { some: {} },
     },
+    include: {items: true},
   });
 
-  if (!cart || cart.items.length === 0) {
+  if (carts.length === 0) {
     throw new Error("Cart is empty");
   }
+  // Process each sponsor's cart as a separate order
+  const orders = await prisma.$transaction(async (tx) => {
+    const createdOrders = [];
 
+    for (const cart of carts) {
+      if (!cart.sponsorId) continue;
+
+      const totalPoints = cart.items.reduce(
+        (sum, item) => sum + item.pointPrice * item.quantity, 0
+      );
+
+      // Verify sufficient points for this sponsor
+      const sponsorship = await tx.sponsoredBy.findUnique({
+        where: {
+          driverId_sponsorOrgId: {
+            driverId: driverProfile.id,
+            sponsorOrgId: cart.sponsorId,
+          },
+        },
+      });
+
+      if (!sponsorship || sponsorship.points < totalPoints) {
+        throw new Error(
+          `Insufficient points for sponsor. You need ${totalPoints - (sponsorship?.points ?? 0)} more points.`
+        );
+      }
+
+      // 1. Create order
+      const newOrder = await tx.order.create({
+        data: {
+          driverProfileId: driverProfile.id,
+          sponsorId: cart.sponsorId,
+          totalPoints,
+          status: "pending",
+        },
+      });
+
+      // 2. Create order items
+      await tx.orderItem.createMany({
+        data: cart.items.map((item) => ({
+          orderId: newOrder.id,
+          ebayItemId: item.ebayItemId,
+          title: item.title,
+          imageUrl: item.imageUrl,
+          pointPrice: item.pointPrice,
+          quantity: item.quantity,
+        })),
+      });
+
+      // 3. Deduct points from SponsoredBy
+      await tx.sponsoredBy.update({
+        where: {
+          driverId_sponsorOrgId: {
+            driverId: driverProfile.id,
+            sponsorOrgId: cart.sponsorId,
+          },
+        },
+        data: { points: { decrement: totalPoints } },
+      });
+
+      // 4. Create point change record
+      await tx.pointChange.create({
+        data: {
+          driverProfileId: driverProfile.id,
+          sponsorId: cart.sponsorId,
+          amount: -totalPoints,
+          reason: `Order #${newOrder.id.slice(-8)} - Purchase`,
+          changedBy: user.id,
+        },
+      });
+
+      // 5. Clear this cart
+      await tx.cartItem.deleteMany({
+        where: { cartId: cart.id },
+      });
+
+      createdOrders.push(newOrder);
+    }
+
+    return createdOrders;
+  });
+
+  revalidatePath("/driver/cart");
+  revalidatePath("/driver/orders");
+  revalidatePath("/driver");
+
+  return { success: true, orderId: orders[0]?.id };
+  /*
   // Calculate total
   const totalPoints = cart.items.reduce(
     (sum, item) => sum + item.pointPrice * item.quantity,
@@ -120,4 +208,5 @@ export async function checkout(deliveryInformation: DeliveryInformation) {
   revalidatePath("/driver");
 
   return { success: true, orderId: order.id };
-}
+*/
+} 
