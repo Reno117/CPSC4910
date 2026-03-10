@@ -35,27 +35,12 @@ export default async function DriverDashboard() {
 
       // Get point transaction history
       if (driverProfile) {
-        const sponsorshipRows = await prisma.$queryRaw<{
-          id: string;
-          points: number;
-          sponsorName: string;
-        }[]>`
-          SELECT
-            sb.id,
-            sb.points,
-            s.name AS sponsorName
-          FROM sponsored_by sb
-          INNER JOIN sponsor s ON s.id = sb.sponsorOrgId
-          WHERE sb.driverId = ${driverProfile.id}
-        `;
-
-        sponsorships = sponsorshipRows.map((row) => ({
-          id: row.id,
-          points: Number(row.points),
-          sponsorOrg: {
-            name: row.sponsorName,
+        sponsorships = await prisma.sponsoredBy.findMany({
+          where: { driverId: driverProfile.id },
+          include: {
+            sponsorOrg: true,
           },
-        }));
+        });
                 
         pointHistory = await prisma.pointChange.findMany({
           where: {

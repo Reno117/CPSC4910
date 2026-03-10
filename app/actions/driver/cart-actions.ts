@@ -45,15 +45,16 @@ export async function addToCart(catalogProductId: string) {
     throw new Error("Product not found");
   }
 
-  const sponsorship = await prisma.$queryRaw<{ id: string }[]>`
-    SELECT id
-    FROM sponsored_by
-    WHERE driverId = ${driverProfile.id}
-      AND sponsorOrgId = ${catalogProduct.sponsorId}
-    LIMIT 1
-  `;
+  const sponsorship = await prisma.sponsoredBy.findUnique({
+    where: {
+      driverId_sponsorOrgId: {
+        driverId: driverProfile.id,
+        sponsorOrgId: catalogProduct.sponsorId,
+      },
+    },
+  });
 
-  if (sponsorship.length === 0) {
+  if (!sponsorship) {
     throw new Error("This product is not available to you");
   }
 

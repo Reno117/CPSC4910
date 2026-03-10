@@ -9,17 +9,11 @@ export default async function PointsHistoryPage() {
     headers: await headers(),
   });
 
-  let totalPointsBalance = 0;
-  let sponsorBalances: {
-    sponsorId: string;
-    sponsorName: string;
-    points: number;
-  }[] = [];
+  let pointsBalance = 0;
   let transactions: {
     id: string;
     amount: number;
     reason: string;
-    sponsorId: string;
     sponsorName: string;
     createdAt: string;
   }[] = [];
@@ -28,30 +22,9 @@ export default async function PointsHistoryPage() {
     const driverProfile = await prisma.driverProfile.findUnique({
       where: { userId: session.user.id },
     });
-    totalPointsBalance = driverProfile?.pointsBalance || 0;
+    pointsBalance = driverProfile?.pointsBalance || 0;
 
     if (driverProfile) {
-      const sponsorshipRows = await prisma.$queryRaw<{
-        sponsorId: string;
-        sponsorName: string;
-        points: number;
-      }[]>`
-        SELECT
-          s.id AS sponsorId,
-          s.name AS sponsorName,
-          sb.points
-        FROM sponsored_by sb
-        INNER JOIN sponsor s ON s.id = sb.sponsorOrgId
-        WHERE sb.driverId = ${driverProfile.id}
-        ORDER BY s.name ASC
-      `;
-
-      sponsorBalances = sponsorshipRows.map((row) => ({
-        sponsorId: row.sponsorId,
-        sponsorName: row.sponsorName,
-        points: Number(row.points),
-      }));
-
       const pointChanges = await prisma.pointChange.findMany({
         where: { driverProfileId: driverProfile.id },
         include: { sponsor: true },
@@ -62,7 +35,6 @@ export default async function PointsHistoryPage() {
         id: tx.id,
         amount: tx.amount,
         reason: tx.reason,
-        sponsorId: tx.sponsorId,
         sponsorName: tx.sponsor.name,
         createdAt: tx.createdAt.toISOString(),
       }));
@@ -73,8 +45,7 @@ export default async function PointsHistoryPage() {
     <div>
       <DriverHeader />
       <PointsHistoryClient
-        totalPointsBalance={totalPointsBalance}
-        sponsorBalances={sponsorBalances}
+        pointsBalance={pointsBalance}
         transactions={transactions}
       />
     </div>

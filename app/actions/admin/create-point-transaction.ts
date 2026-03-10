@@ -9,7 +9,6 @@ export async function createAdminPointTransaction(formData: FormData) {
   const adminUser = await requireAdmin();
 
   const driverId = String(formData.get("driverId") ?? "").trim();
-  const sponsorId = String(formData.get("sponsorId") ?? "").trim();
   const amountInput = String(formData.get("amount") ?? "").trim();
   const reasonInput = String(formData.get("reason") ?? "").trim();
 
@@ -26,14 +25,11 @@ export async function createAdminPointTransaction(formData: FormData) {
     redirect(`/admin/${driverId}/transactions?error=missing-reason`);
   }
 
-  if (!sponsorId) {
-    redirect(`/admin/${driverId}/transactions?error=missing-sponsor`);
-  }
-
   const driver = await prisma.driverProfile.findUnique({
     where: { id: driverId },
     select: {
       id: true,
+      sponsorId: true,
     },
   });
 
@@ -41,45 +37,29 @@ export async function createAdminPointTransaction(formData: FormData) {
     redirect(`/admin?error=driver-not-found`);
   }
 
-  const sponsorshipRows = await prisma.$queryRaw<{ id: string }[]>`
-    SELECT id
-    FROM sponsored_by
-    WHERE driverId = ${driverId}
-      AND sponsorOrgId = ${sponsorId}
-    LIMIT 1
-  `;
-
-  if (sponsorshipRows.length === 0) {
-    redirect(`/admin/${driverId}/transactions?error=invalid-sponsor-selection`);
+  if (!driver.sponsorId) {
+    redirect(`/admin/${driverId}/transactions?error=driver-has-no-sponsor`);
   }
 
-  await prisma.$transaction(async (tx) => {
-    await tx.driverProfile.update({
+  await prisma.$transaction([
+    prisma.driverProfile.update({
       where: { id: driverId },
       data: {
         pointsBalance: {
           increment: amount,
         },
       },
-    });
-
-    await tx.$executeRaw`
-      UPDATE sponsored_by
-      SET points = points + ${amount}
-      WHERE driverId = ${driverId}
-        AND sponsorOrgId = ${sponsorId}
-    `;
-
-    await tx.pointChange.create({
+    }),
+    prisma.pointChange.create({
       data: {
         driverProfileId: driverId,
-        sponsorId,
+        sponsorId: driver.sponsorId,
         amount,
         reason: `Admin adjustment: ${reasonInput}`,
         changedBy: adminUser.id,
       },
-    });
-  });
+    }),
+  ]);
 
   revalidatePath("/admin");
   revalidatePath(`/admin/${driverId}`);

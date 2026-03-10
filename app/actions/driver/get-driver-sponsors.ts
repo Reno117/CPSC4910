@@ -10,26 +10,25 @@ export interface DriverSponsor {
 }
 
 export async function getDriverSponsors(driverId: string): Promise<DriverSponsor[]> {
-  const sponsorships = await prisma.$queryRaw<{
-    sponsorId: string;
-    sponsorName: string;
-    pointValue: number;
-    points: number;
-  }[]>`
-    SELECT
-      s.id AS sponsorId,
-      s.name AS sponsorName,
-      s.pointValue,
-      sb.points
-    FROM sponsored_by sb
-    INNER JOIN sponsor s ON s.id = sb.sponsorOrgId
-    WHERE sb.driverId = ${driverId}
-  `;
+  const sponsorships = await prisma.sponsoredBy.findMany({
+    where: {
+      driverId,
+    },
+    include: {
+      sponsorOrg: {
+        select: {
+          id: true,
+          name: true,
+          pointValue: true,
+        },
+      },
+    },
+  });
 
   return sponsorships.map((s) => ({
-    id: s.sponsorId,
-    name: s.sponsorName,
-    points: Number(s.points),
-    pointValue: Number(s.pointValue),
+    id: s.sponsorOrg.id,
+    name: s.sponsorOrg.name,
+    points: s.points,
+    pointValue: s.sponsorOrg.pointValue,
   }));
 }
