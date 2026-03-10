@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { randomUUID } from "crypto";
 
 const allowedStatuses = new Set(["pending", "active", "dropped", "disabled"]);
 
@@ -14,7 +15,14 @@ export async function updateDriverProfile(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const imageInput = String(formData.get("image") ?? "").trim();
-  const sponsorIdInput = String(formData.get("sponsorId") ?? "").trim();
+  const sponsorIdsInput = Array.from(
+    new Set(
+      formData
+        .getAll("sponsorIds")
+        .map((value) => String(value).trim())
+        .filter(Boolean)
+    )
+  );
   const statusInput = String(formData.get("status") ?? "")
     .trim()
     .toLowerCase();
@@ -29,25 +37,30 @@ export async function updateDriverProfile(formData: FormData) {
 
   const existingDriver = await prisma.driverProfile.findUnique({
     where: { id: driverId },
-    select: { id: true, userId: true, status: true },
+    select: {
+      id: true,
+      userId: true,
+      status: true,
+    },
   });
 
   if (!existingDriver) {
     redirect(`/admin?error=driver-not-found`);
   }
 
-  let sponsorId: string | null = null;
-  if (sponsorIdInput) {
-    const sponsorExists = await prisma.sponsor.findUnique({
-      where: { id: sponsorIdInput },
+  if (sponsorIdsInput.length > 0) {
+    const sponsors = await prisma.sponsor.findMany({
+      where: {
+        id: {
+          in: sponsorIdsInput,
+        },
+      },
       select: { id: true },
     });
 
-    if (!sponsorExists) {
+    if (sponsors.length !== sponsorIdsInput.length) {
       redirect(`/admin/${driverId}?error=invalid-sponsor`);
     }
-
-    sponsorId = sponsorIdInput;
   }
 
   await prisma.$transaction(async (tx) => {
@@ -60,12 +73,12 @@ export async function updateDriverProfile(formData: FormData) {
       },
     });
 
-    let finalSponsorId = sponsorId;
+    let finalSponsorIds = sponsorIdsInput;
 
     // If status is being changed to "active", approve any pending applications
     if (statusInput === "active" && existingDriver.status !== "active") {
-      // Auto-assign sponsor from first approved application if not explicitly set
-      if (!finalSponsorId) {
+      // Auto-assign sponsor from first application if not explicitly set
+      if (finalSponsorIds.length === 0) {
         const approvedApp = await tx.driverApplication.findFirst({
           where: {
             driverProfileId: driverId,
@@ -75,7 +88,7 @@ export async function updateDriverProfile(formData: FormData) {
           },
         });
         if (approvedApp) {
-          finalSponsorId = approvedApp.sponsorId;
+          finalSponsorIds = [approvedApp.sponsorId];
         }
       }
 
@@ -94,10 +107,24 @@ export async function updateDriverProfile(formData: FormData) {
     await tx.driverProfile.update({
       where: { id: driverId },
       data: {
-        sponsorId: finalSponsorId,
+        sponsorId: finalSponsorIds[0] ?? null,
         status: statusInput,
       },
     });
+
+    if (statusInput !== "pending") {
+      await tx.$executeRaw`
+        DELETE FROM sponsored_by
+        WHERE driverId = ${driverId}
+      `;
+
+      for (const sponsorOrgId of finalSponsorIds) {
+        await tx.$executeRaw`
+          INSERT INTO sponsored_by (id, driverId, sponsorOrgId, points, createdAt)
+          VALUES (${randomUUID()}, ${driverId}, ${sponsorOrgId}, 0.01, NOW())
+        `;
+      }
+    }
 
     // If status is being changed to "dropped", mark all applications as dropped
     if (statusInput === "dropped" && existingDriver.status !== "dropped") {

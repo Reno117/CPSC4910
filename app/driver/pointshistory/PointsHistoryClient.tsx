@@ -6,27 +6,48 @@ type PointTransaction = {
   id: string;
   amount: number;
   reason: string;
+  sponsorId: string;
   sponsorName: string;
   createdAt: string;
 };
 
+type SponsorBalance = {
+  sponsorId: string;
+  sponsorName: string;
+  points: number;
+};
+
 interface PointsHistoryClientProps {
-  pointsBalance: number;
+  totalPointsBalance: number;
+  sponsorBalances: SponsorBalance[];
   transactions: PointTransaction[];
 }
 
 export default function PointsHistoryClient({
-  pointsBalance,
+  totalPointsBalance,
+  sponsorBalances,
   transactions,
 }: PointsHistoryClientProps) {
   const [typeFilter, setTypeFilter] = useState<"all" | "additions" | "deductions">("all");
+  const [sponsorFilter, setSponsorFilter] = useState<string>("all");
+  const [balanceSponsorId, setBalanceSponsorId] = useState<string>("all");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+
+  const displayedBalance = useMemo(() => {
+    if (balanceSponsorId === "all") {
+      const summedSponsorPoints = sponsorBalances.reduce((sum, sponsor) => sum + sponsor.points, 0);
+      return sponsorBalances.length > 0 ? summedSponsorPoints : totalPointsBalance;
+    }
+
+    return sponsorBalances.find((sponsor) => sponsor.sponsorId === balanceSponsorId)?.points ?? 0;
+  }, [balanceSponsorId, sponsorBalances, totalPointsBalance]);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
       if (typeFilter === "additions" && tx.amount < 0) return false;
       if (typeFilter === "deductions" && tx.amount > 0) return false;
+      if (sponsorFilter !== "all" && tx.sponsorId !== sponsorFilter) return false;
 
       const txDate = new Date(tx.createdAt);
       if (fromDate) {
@@ -41,23 +62,38 @@ export default function PointsHistoryClient({
 
       return true;
     });
-  }, [transactions, typeFilter, fromDate, toDate]);
+  }, [transactions, typeFilter, sponsorFilter, fromDate, toDate]);
 
   return (
     <div className="pt-16">
       <div className="max-w-4xl mx-auto px-6 py-10 space-y-8">
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-8 text-center">
+          <div className="max-w-sm text-left mb-4">
+            <label className="text-sm text-blue-700 mb-1 block">Sponsor</label>
+            <select
+              className="w-full border border-blue-300 rounded px-3 py-2 bg-white"
+              value={balanceSponsorId}
+              onChange={(e) => setBalanceSponsorId(e.target.value)}
+            >
+              <option value="all">All Sponsors</option>
+              {sponsorBalances.map((sponsor) => (
+                <option key={sponsor.sponsorId} value={sponsor.sponsorId}>
+                  {sponsor.sponsorName}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="text-sm uppercase tracking-wide text-blue-600 font-semibold">
             Points Balance
           </div>
           <div className="mt-2 text-5xl font-extrabold text-blue-900">
-            {pointsBalance}
+            {displayedBalance}
           </div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
           <h2 className="text-xl font-semibold text-gray-800">Filters</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="flex flex-col">
               <label className="text-sm text-gray-600 mb-1">Type</label>
               <select
@@ -68,6 +104,22 @@ export default function PointsHistoryClient({
                 <option value="all">All</option>
                 <option value="additions">Additions</option>
                 <option value="deductions">Deductions</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600 mb-1">Sponsor</label>
+              <select
+                className="border rounded px-3 py-2"
+                value={sponsorFilter}
+                onChange={(e) => setSponsorFilter(e.target.value)}
+              >
+                <option value="all">All Sponsors</option>
+                {sponsorBalances.map((sponsor) => (
+                  <option key={sponsor.sponsorId} value={sponsor.sponsorId}>
+                    {sponsor.sponsorName}
+                  </option>
+                ))}
               </select>
             </div>
 

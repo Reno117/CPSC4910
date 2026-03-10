@@ -37,6 +37,18 @@ export default async function AdminDriverEditPage({ params, searchParams }: Admi
     notFound();
   }
 
+  const sponsoredByLinks = await prisma.$queryRaw<{ sponsorOrgId: string }[]>`
+    SELECT sponsorOrgId
+    FROM sponsored_by
+    WHERE driverId = ${id}
+  `;
+
+  const selectedSponsorIds = sponsoredByLinks.length > 0
+    ? sponsoredByLinks.map((link) => link.sponsorOrgId)
+    : driver.sponsorId
+      ? [driver.sponsorId]
+      : [];
+
   return (
     <div>
       <AdminHeader />
@@ -75,6 +87,7 @@ export default async function AdminDriverEditPage({ params, searchParams }: Admi
 
           <DriverEditForm 
             driver={driver}
+            selectedSponsorIds={selectedSponsorIds}
             sponsors={sponsors}
             updateAction={updateDriverProfile}
           />

@@ -18,19 +18,27 @@ export default async function MySponsorPage() {
     if (session?.user?.id) {
       const driverProfile = await prisma.driverProfile.findUnique({
         where: { userId: session.user.id },
-        include: { 
-          sponsorships:{
-              include: {
-                sponsorOrg: true,
-              },
-            },
+        select: {
+          id: true,
         },
       });
-      console.log("Driver profile:", JSON.stringify(driverProfile, null, 2));
-      sponsors = driverProfile?.sponsorships.map(s => ({
-        id: s.sponsorOrg.id,
-        name: s.sponsorOrg.name,
-      })) ?? [];
+
+      if (driverProfile) {
+        const sponsorshipRows = await prisma.$queryRaw<{ sponsorId: string; sponsorName: string }[]>`
+          SELECT
+            s.id AS sponsorId,
+            s.name AS sponsorName
+          FROM sponsored_by sb
+          INNER JOIN sponsor s ON s.id = sb.sponsorOrgId
+          WHERE sb.driverId = ${driverProfile.id}
+          ORDER BY s.name ASC
+        `;
+
+        sponsors = sponsorshipRows.map((row) => ({
+          id: row.sponsorId,
+          name: row.sponsorName,
+        }));
+      }
     }
 
     return (

@@ -5,36 +5,99 @@ import DriverHeader from "@/app/components/DriverComponents/DriverHeader";
 import CartItemCard from "@/app/components/cart/cart-item-card";
 import CheckoutButton from "@/app/components/cart/checkout-button";
 
+type CartRow = {
+  cartId: string;
+  sponsorId: string | null;
+  sponsorName: string | null;
+  itemId: string | null;
+  ebayItemId: string | null;
+  title: string | null;
+  imageUrl: string | null;
+  pointPrice: number | null;
+  quantity: number | null;
+};
+
+type SponsorshipBalanceRow = {
+  sponsorOrgId: string;
+  points: number;
+};
+
 export default async function CartPage() {
   const user = await requireDriver();
   const driverProfile = user.driverProfile!;
 
-  // Get cart with items
-  const carts = await prisma.cart.findMany({
-    where: { driverProfileId: driverProfile.id },
-    include: {
-      sponsor: true,
-      items: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-  });
+  const cartRows = await prisma.$queryRaw<CartRow[]>`
+    SELECT
+      c.id AS cartId,
+      c.sponsorId,
+      s.name AS sponsorName,
+      ci.id AS itemId,
+      ci.ebayItemId,
+      ci.title,
+      ci.imageUrl,
+      ci.pointPrice,
+      ci.quantity
+    FROM cart c
+    LEFT JOIN sponsor s ON s.id = c.sponsorId
+    LEFT JOIN cart_item ci ON ci.cartId = c.id
+    WHERE c.driverProfileId = ${driverProfile.id}
+    ORDER BY c.createdAt DESC, ci.createdAt DESC
+  `;
+
+  const cartMap = new Map<string, {
+    id: string;
+    sponsorId: string | null;
+    sponsor: { name: string | null } | null;
+    items: {
+      id: string;
+      ebayItemId: string;
+      title: string;
+      imageUrl: string | null;
+      pointPrice: number;
+      quantity: number;
+    }[];
+  }>();
+
+  for (const row of cartRows) {
+    if (!cartMap.has(row.cartId)) {
+      cartMap.set(row.cartId, {
+        id: row.cartId,
+        sponsorId: row.sponsorId,
+        sponsor: row.sponsorId
+          ? { name: row.sponsorName }
+          : null,
+        items: [],
+      });
+    }
+
+    if (row.itemId && row.ebayItemId && row.title && row.pointPrice !== null && row.quantity !== null) {
+      cartMap.get(row.cartId)!.items.push({
+        id: row.itemId,
+        ebayItemId: row.ebayItemId,
+        title: row.title,
+        imageUrl: row.imageUrl,
+        pointPrice: Number(row.pointPrice),
+        quantity: Number(row.quantity),
+      });
+    }
+  }
+
+  const carts = Array.from(cartMap.values());
+
+  const sponsorshipBalances = await prisma.$queryRaw<SponsorshipBalanceRow[]>`
+    SELECT sponsorOrgId, points
+    FROM sponsored_by
+    WHERE driverId = ${driverProfile.id}
+  `;
+  const balanceBySponsorId = new Map(
+    sponsorshipBalances.map((row) => [row.sponsorOrgId, Number(row.points)])
+  );
 
   const cartsWithBalance = await Promise.all(
     carts.map(async (cart) => {
       let balance = 0;
       if (cart.sponsorId) {
-        const sponsorship = await prisma.sponsoredBy.findUnique({
-          where: {
-            driverId_sponsorOrgId: {
-              driverId: driverProfile.id,
-              sponsorOrgId: cart.sponsorId,
-            },
-          },
-        });
-        balance = sponsorship?.points ?? 0;
+        balance = balanceBySponsorId.get(cart.sponsorId) ?? 0;
       }
       const totalPoints = cart.items.reduce(
         (sum, item) => sum + item.pointPrice * item.quantity, 0
@@ -48,24 +111,6 @@ export default async function CartPage() {
       };
     })
   );
-
-/*
-  const cartItems = cart?.items || [];
-  const totalPoints = cartItems.reduce(
-    (sum, item) => sum + item.pointPrice * item.quantity,
-    0,
-  );
-
-  const sponsorships = await prisma.sponsoredBy.findMany({
-    where: {driverId: driverProfile.id},
-    include: { sponsorOrg: true },
-  })
-
-  const totalBalance = sponsorships.reduce((sum, s) => sum + s.points, 0);
-  const canCheckout = cartItems.length > 0 && currentBalance >= totalPoints;
-  const pointsNeeded =
-    totalPoints > currentBalance ? totalPoints - currentBalance : 0;
-*/
   return (
     <div>
       <DriverHeader />

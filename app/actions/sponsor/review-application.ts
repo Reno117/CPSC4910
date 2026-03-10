@@ -44,21 +44,17 @@ export async function reviewApplication(
           status: "active",
         },
       });
-    
-    await tx.sponsoredBy.upsert({
-    where: {
-      driverId_sponsorOrgId: {
-        driverId: application.driverProfileId,
-        sponsorOrgId: application.sponsorId,
-      },
-    },
-    create: {
-      driverId: application.driverProfileId,
-      sponsorOrgId: application.sponsorId,
-      points: 0,
-    },
-    update: {},
-  });
+
+      await tx.$executeRaw`
+        INSERT INTO sponsored_by (id, driverId, sponsorOrgId, points, createdAt)
+        SELECT UUID(), ${application.driverProfileId}, ${application.sponsorId}, 0, NOW()
+        WHERE NOT EXISTS (
+          SELECT 1
+          FROM sponsored_by
+          WHERE driverId = ${application.driverProfileId}
+            AND sponsorOrgId = ${application.sponsorId}
+        )
+      `;
     }
   });
 

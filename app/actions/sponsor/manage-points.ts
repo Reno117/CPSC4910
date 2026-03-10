@@ -12,12 +12,10 @@ export async function addPoints(
 ) {
   const { user, isAdmin, sponsorId } = await requireSponsorOrAdmin();
 
-  // Verify driver belongs to this sponsor (unless admin)
   const driverProfile = await prisma.driverProfile.findUnique({
     where: { id: driverProfileId },
   });
-console.log("sponsorIdParam:", sponsorIdParam);
-console.log("sponsorId from auth:", sponsorId);
+
   if (!driverProfile) {
     throw new Error("Driver not found");
   }
@@ -28,38 +26,35 @@ console.log("sponsorId from auth:", sponsorId);
     throw new Error("Driver is not associated with a sponsor");
   };
 
-   // Verify the driver is actually sponsored by this sponsor via bridge table
+  // Verify the driver is actually sponsored by this sponsor via bridge table
   if (!isAdmin) {
-    const sponsorship = await prisma.sponsoredBy.findUnique({
-      where: {
-        driverId_sponsorOrgId: {
-          driverId: driverProfileId,
-          sponsorOrgId: actualSponsorId,
-        },
-      },
-    });
-    if (!sponsorship) {
+    const sponsorship = await prisma.$queryRaw<{ id: string }[]>`
+      SELECT id
+      FROM sponsored_by
+      WHERE driverId = ${driverProfileId}
+        AND sponsorOrgId = ${actualSponsorId}
+      LIMIT 1
+    `;
+
+    if (sponsorship.length === 0) {
       throw new Error("Unauthorized: Driver not in your organization");
     }
   }
 
   // Update points in transaction
-  await prisma.$transaction([
-    prisma.sponsoredBy.update({
-      where: { 
-        driverId_sponsorOrgId: {
-          driverId: driverProfileId,
-          sponsorOrgId: actualSponsorId, 
-        },
-      },
-      data: {
-        points: {
-          increment: amount,
-        },
-      },
-    }),
-    
-    prisma.pointChange.create({
+  await prisma.$transaction(async (tx) => {
+    const updatedRows = await tx.$executeRaw`
+      UPDATE sponsored_by
+      SET points = points + ${amount}
+      WHERE driverId = ${driverProfileId}
+        AND sponsorOrgId = ${actualSponsorId}
+    `;
+
+    if (updatedRows === 0) {
+      throw new Error("Sponsorship not found for this driver and sponsor");
+    }
+
+    await tx.pointChange.create({
       data: {
         driverProfileId: driverProfileId,
         sponsorId: actualSponsorId,
@@ -67,8 +62,8 @@ console.log("sponsorId from auth:", sponsorId);
         reason: reason,
         changedBy: user.id,
       },
-    }),
-  ]);
+    });
+  });
 
   revalidatePath(`/sponsor/drivers`);
   

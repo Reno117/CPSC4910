@@ -5,6 +5,20 @@ import DriverListClient from "@/app/components/SponsorComponents/DriverListClien
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+type DriverRow = {
+  id: string;
+  points: number;
+  sponsorOrgId: string;
+  createdAt: Date;
+  driverId: string;
+  status: string;
+  pointsBalance: number;
+  driverName: string;
+  driverEmail: string;
+  driverImage: string | null;
+  sponsorName: string;
+};
+
 export default async function SponsorDashboard() {
   const { isAdmin, sponsorId } = await requireSponsorOrAdmin();
   const session = await auth.api.getSession({
@@ -47,33 +61,66 @@ export default async function SponsorDashboard() {
         })
       : [];
 
-  const drivers = await prisma.sponsoredBy.findMany({
-    where: isAdmin
-      ? {}
-      : { sponsorOrgId: sponsorId!},
-    select: {
-      id: true,
-      points: true,
-      sponsorOrgId: true,
-      createdAt: true,
-      driver: {
-        select: {
-          id: true,
-          status: true,
-          pointsBalance: true,
-          user: {select: {name: true, email: true, image: true } },
-        },
-      },
-      sponsorOrg: {
-        select: {
-          name: true,
-        },
+  const rows = isAdmin
+    ? await prisma.$queryRaw<DriverRow[]>`
+        SELECT
+          sb.id,
+          sb.points,
+          sb.sponsorOrgId,
+          sb.createdAt,
+          dp.id AS driverId,
+          dp.status,
+          dp.pointsBalance,
+          u.name AS driverName,
+          u.email AS driverEmail,
+          u.image AS driverImage,
+          s.name AS sponsorName
+        FROM sponsored_by sb
+        INNER JOIN driver_profile dp ON dp.id = sb.driverId
+        INNER JOIN user u ON u.id = dp.userId
+        INNER JOIN sponsor s ON s.id = sb.sponsorOrgId
+        ORDER BY sb.createdAt DESC
+      `
+    : await prisma.$queryRaw<DriverRow[]>`
+        SELECT
+          sb.id,
+          sb.points,
+          sb.sponsorOrgId,
+          sb.createdAt,
+          dp.id AS driverId,
+          dp.status,
+          dp.pointsBalance,
+          u.name AS driverName,
+          u.email AS driverEmail,
+          u.image AS driverImage,
+          s.name AS sponsorName
+        FROM sponsored_by sb
+        INNER JOIN driver_profile dp ON dp.id = sb.driverId
+        INNER JOIN user u ON u.id = dp.userId
+        INNER JOIN sponsor s ON s.id = sb.sponsorOrgId
+        WHERE sb.sponsorOrgId = ${sponsorId!}
+        ORDER BY sb.createdAt DESC
+      `;
+
+  const drivers = rows.map((row) => ({
+    id: row.id,
+    points: Number(row.points),
+    sponsorOrgId: row.sponsorOrgId,
+    createdAt: row.createdAt,
+    driver: {
+      id: row.driverId,
+      status: row.status,
+      pointsBalance: Number(row.pointsBalance),
+      user: {
+        name: row.driverName,
+        email: row.driverEmail,
+        image: row.driverImage,
       },
     },
-    orderBy: {
-      createdAt: "desc",
+    sponsorOrg: {
+      name: row.sponsorName,
     },
-  });
+  }));
 
   if (!user) return null;
 
