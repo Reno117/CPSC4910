@@ -55,7 +55,7 @@ model DriverProfile {
   // Relations
   applications  DriverApplication[]
   pointChanges  PointChange[]
-  cart          Cart?
+  cart          Cart[]    @relation("CartDriver")
   orders        Order[]
   sponsorships  SponsoredBy[]
 
@@ -76,6 +76,7 @@ model Sponsor {
   catalogProducts CatalogProduct[]
   orders          Order[]
   sponsorships    SponsoredBy[]
+  carts           Cart[]      @relation("CartSponsor")
 
   @@map("sponsor")
 }
@@ -206,16 +207,20 @@ model CatalogProduct {
 }
 
 model Cart {
-  id              String   @id @default(cuid())
-  driverProfileId String   @unique
-  driverProfile   DriverProfile @relation(fields: [driverProfileId], references: [id], onDelete: Cascade)
+  id              String   @id   @default(cuid())
+  driverProfileId String
+  driverProfile   DriverProfile  @relation("CartDriver", fields: [driverProfileId], references: [id], onDelete: Cascade)
   
+  sponsorId       String?
+  sponsor         Sponsor?      @relation("CartSponsor", fields: [sponsorId], references: [id])
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
   items           CartItem[]
   
   @@map("cart")
+  @@unique([driverProfileId, sponsorId])
 }
 
 model CartItem {
