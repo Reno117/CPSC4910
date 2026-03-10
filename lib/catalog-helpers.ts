@@ -4,29 +4,20 @@ import { prisma } from "@/lib/prisma";
  * Get catalog products for a driver's sponsor with point prices
  */
 export async function getDriverCatalog(driverProfileId: string, sponsorIdOverride?: string) {
-  const sponsorships = await prisma.$queryRaw<{
-    sponsorOrgId: string;
-    sponsorId: string;
-    sponsorName: string;
-    pointValue: number;
-  }[]>`
-    SELECT
-      sb.sponsorOrgId,
-      s.id AS sponsorId,
-      s.name AS sponsorName,
-      s.pointValue
-    FROM sponsored_by sb
-    INNER JOIN sponsor s ON s.id = sb.sponsorOrgId
-    WHERE sb.driverId = ${driverProfileId}
-  `;
+  const sponsorships = await prisma.sponsoredBy.findMany({
+    where: { driverId: driverProfileId },
+    include: {
+      sponsorOrg: true,
+    },
+  });
 
   if (sponsorships.length === 0) {
     return { products: [], pointValue: 0.01, sponsorName: null };
   }
 
   const activeSponsor = sponsorIdOverride 
-    ? sponsorships.find(s => s.sponsorOrgId === sponsorIdOverride)
-    : sponsorships[0];
+    ? sponsorships.find(s => s.sponsorOrgId === sponsorIdOverride)?.sponsorOrg
+    : sponsorships[0].sponsorOrg;
   
   if(!activeSponsor) {
     return { products: [], pointValue: 0.01, sponsorName: null };
@@ -34,7 +25,7 @@ export async function getDriverCatalog(driverProfileId: string, sponsorIdOverrid
 
   const products = await prisma.catalogProduct.findMany({
     where: {
-      sponsorId: activeSponsor.sponsorId,
+      sponsorId: activeSponsor.id,
        isActive: true, // Only show active products
     },
     orderBy: {
@@ -44,9 +35,9 @@ export async function getDriverCatalog(driverProfileId: string, sponsorIdOverrid
 
   return {
     products,
-    pointValue: Number(activeSponsor.pointValue),
-    sponsorName: activeSponsor.sponsorName,
-    activeSponsorId: activeSponsor.sponsorId,
+    pointValue: activeSponsor.pointValue,
+    sponsorName: activeSponsor.name,
+    activeSponsorId: activeSponsor.id,
     
   };
 }

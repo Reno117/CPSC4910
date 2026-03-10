@@ -46,15 +46,16 @@ export default async function DriverCatalogPage({ searchParams }: { searchParams
     
 
     if (catalog.activeSponsorId) {
-          const sponsorship = await prisma.$queryRaw<{ points: number }[]>`
-            SELECT points
-            FROM sponsored_by
-            WHERE driverId = ${driverProfile.id}
-              AND sponsorOrgId = ${catalog.activeSponsorId}
-            LIMIT 1
-          `;
-          currentBalance = sponsorship[0]?.points ?? 0;
-        }
+    const sponsorship = await prisma.sponsoredBy.findUnique({
+      where: {
+        driverId_sponsorOrgId: {
+          driverId: driverProfile.id,
+          sponsorOrgId: catalog.activeSponsorId,
+        },
+      },
+    });
+    currentBalance = sponsorship?.points ?? 0;
+  }
 
   }
 
