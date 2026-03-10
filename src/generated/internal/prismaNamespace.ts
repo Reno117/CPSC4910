@@ -384,7 +384,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  Rule: 'Rule',
+  rule: 'rule',
   User: 'User',
   DriverProfile: 'DriverProfile',
   Sponsor: 'Sponsor',
@@ -420,68 +420,68 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
-    Rule: {
-      payload: Prisma.$RulePayload<ExtArgs>
-      fields: Prisma.RuleFieldRefs
+    rule: {
+      payload: Prisma.$rulePayload<ExtArgs>
+      fields: Prisma.ruleFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.RuleFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload> | null
+          args: Prisma.ruleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.RuleFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload>
+          args: Prisma.ruleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload>
         }
         findFirst: {
-          args: Prisma.RuleFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload> | null
+          args: Prisma.ruleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.RuleFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload>
+          args: Prisma.ruleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload>
         }
         findMany: {
-          args: Prisma.RuleFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload>[]
+          args: Prisma.ruleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload>[]
         }
         create: {
-          args: Prisma.RuleCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload>
+          args: Prisma.ruleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload>
         }
         createMany: {
-          args: Prisma.RuleCreateManyArgs<ExtArgs>
+          args: Prisma.ruleCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         delete: {
-          args: Prisma.RuleDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload>
+          args: Prisma.ruleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload>
         }
         update: {
-          args: Prisma.RuleUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload>
+          args: Prisma.ruleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload>
         }
         deleteMany: {
-          args: Prisma.RuleDeleteManyArgs<ExtArgs>
+          args: Prisma.ruleDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.RuleUpdateManyArgs<ExtArgs>
+          args: Prisma.ruleUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         upsert: {
-          args: Prisma.RuleUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RulePayload>
+          args: Prisma.ruleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$rulePayload>
         }
         aggregate: {
           args: Prisma.RuleAggregateArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AggregateRule>
         }
         groupBy: {
-          args: Prisma.RuleGroupByArgs<ExtArgs>
+          args: Prisma.ruleGroupByArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RuleGroupByOutputType>[]
         }
         count: {
-          args: Prisma.RuleCountArgs<ExtArgs>
+          args: Prisma.ruleCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RuleCountAggregateOutputType> | number
         }
       }
@@ -1818,12 +1818,12 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const RuleOrderByRelevanceFieldEnum = {
+export const ruleOrderByRelevanceFieldEnum = {
   title: 'title',
   content: 'content'
 } as const
 
-export type RuleOrderByRelevanceFieldEnum = (typeof RuleOrderByRelevanceFieldEnum)[keyof typeof RuleOrderByRelevanceFieldEnum]
+export type ruleOrderByRelevanceFieldEnum = (typeof ruleOrderByRelevanceFieldEnum)[keyof typeof ruleOrderByRelevanceFieldEnum]
 
 
 export const NullsOrder = {
@@ -2141,7 +2141,7 @@ export type PrismaClientOptions = ({
   comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
-  rule?: Prisma.RuleOmit
+  rule?: Prisma.ruleOmit
   user?: Prisma.UserOmit
   driverProfile?: Prisma.DriverProfileOmit
   sponsor?: Prisma.SponsorOmit
