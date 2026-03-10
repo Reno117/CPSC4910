@@ -8,9 +8,17 @@ datasource db {
 }
 
 model Rule {
+<<<<<<< Updated upstream
   id          Int       @id @default(autoincrement())
   title       String
   content     String    @db.Text
+=======
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String @db.Text
+
+  @@map("rule")
+>>>>>>> Stashed changes
 }
 
 model User {
